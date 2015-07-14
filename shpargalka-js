@@ -1,0 +1,582 @@
+=========== learn.javascript.ru ============
+
+ПЕРЕПРОЧИТАТЬ:
+1.	https://learn.javascript.ru/array-iteration
+
+2.	бинарный + например массива и числа к чему приводит?
+		приводит к строке
+
+3.		var a = new function() {
+		  	this.b = 2;
+		} //работает как конструктор
+		alert(a.b);
+
+4.	https://learn.javascript.ru/oop-errors
+
+Console
+	console.time('1') //начнет отсчет времени
+	console.timeEnd('1') //закончит отсчет времени и выведет в консоль
+
+typeof:
+	typeof null; //вернет object - это ошибка в языке
+	typeof []; //вернет object
+	typeof {}; //вернет object
+
+Number:
+	+var - 	привести var к Number
+		+'2' //2
+		+null //0
+		+undefined //NaN
+	особые значения: NaN и Infinity
+		'string' * 2 // NaN
+	isNaN(n) - проверяет на NaN - работает и для строк (пустая строка вернет 0, isNaN('')==>false )
+	остальные типы тоже приводятся к числу
+	isFinite(n) - true если n - не NaN или +-Infinity
+	
+	parseInt(str), parseFloat(str) - парсят строку до первого несовпада
+		parseInt('12px') //12
+		parseFloat('12.3.4.54') //12.3
+	Они вернут NaN если ошибка произошла на первом же символе
+	Нестроковые аргументы сначала приводятся к строке
+
+	12.toFixed(n) вызовет ошибку, правильно
+		12..toFixed(n)
+		12.0.toFixed(n)
+
+	Бывают пиздецы с округлениями
+		alert( 9999999999999999 ); // выведет 10000000000000000
+		alert( .1 + .2 ); // выведет 0.30000000000000004
+
+Численное преобразование
+	переопределяем метоод valueOf(). не обязательно возвращать number, любой примитив
+	(string, bool etc) который потом будет преобразован к число
+
+String:
+	что угодно + строка делает конкатенацию строк 
+	(только перед этим 'что угодно' приводится к числу)
+		'2' + 1 //'21'
+	остальное (-, /, *) - пытается привести к числу
+		'2' - 1 // 1
+	инкремент/декремент приводит к числу
+		var s = '2'; ++s; //3
+
+	Символ на какой-то позиции
+		alert( "".charAt(0) ); // пустая строка
+		alert( "" [0] ); // undefined
+
+	Многострочная строка: как в мейкфайле
+		var ssstring = "lalala \
+						bebebe";
+
+	substring(start, end) возвращает подстроку с позиции start до, но не включая end
+	 все что не впишется в длину строки - приведется к длине строки
+	 если start > end - то они поменяются местами
+	substr(start [, length]) Первый аргумент имеет такой же смысл, как и в substring, 
+	 а второй содержит не конечную позицию, а количество символов.
+	slice(start [, end]) - как substring, но отрицательные агрументы будут 
+	 считаться с конца
+
+Boolean
+	var b1 = true // это примитив, работает как надо
+	var b2 = new Boolean(false);
+		if(b2) // тут b2 будет приведен к true, ибо это объект
+
+Строковое преобразование
+	Кастомное преобразование к строке получается переопределением метода toString()
+	оно может возвращать любой примитив, не обязательно string. Потом это к строке 
+	приведется дополнительно
+
+Операторы сравнения:
+	>, <, >=, <=, ==, != - приводится к Number
+	null == undefined, оба не равны чему-то еще
+	NaN не равен вообще ничему
+		NaN == NaN //false
+	строки сравниваются как strcmp
+	чтобы сравнить по алфавиту, а не по кодировке, то юзать str.localeCompare
+		['x'] == 'x' //true потому что сначала приводятся объекты. Причем приводятся к строке
+
+Побитовые операторы:
+	~ - побитовое отрицание
+	^ - xor
+		12.345 ^ 0 // 12
+	проверка на -1:
+		(~num) //true if num != -1
+
+Логические операторы:
+	Все приводится к булю
+	0, '', null, undefined, NaN приводится к false, остальное к true
+		!!'0' //true
+	&& возвращает первый false
+	|| возвращает первое true
+	приведение к булю:
+		!!var
+	к булю приводится в if, while, for
+	[] и {} => true
+
+Switch case
+	сравнивает без приведения типов, т.е. ===
+
+Функции
+	если объявлено как
+		function F() {};
+	то этот код выполнится в самом начале (независимо от того где он написан)
+
+	а если как
+		var F = function() {};
+	то все норм.
+
+	чтобы уже объявленную функцию нельзя было переопределить, то юзаем
+		var varFunc = function F() {};
+	только тогда и доступ к ней возможен только по varFunc
+	имя F() используется внутри функции для рекурсивных вызовов
+
+	если функция ничего не возвращает, то вернется undefined
+
+	еще функцию можно объявить вот так:
+		var sum = new Function('a,b', ' return a+b; ');
+	первый параметр - аргументы, второй - тело
+
+	arguments лучше не изменять, потому что изменятся ли 
+	 именованные параметры от этого - хз, зависит от интерпретатора.
+	 'use strict' решает проблему - при изменении arguments именованные параметры не меняются
+
+	Как в питоне f(arg1 = 1, arg3 = 4) нельзя, это обходится с помощью
+	f(options), где options = {arg1: 1, arg3: 4}
+
+Автоматическое тестирование:
+	https://learn.javascript.ru/testing
+
+Объекты:
+	Всегда работают по указателю!!!
+		var menuSetup = {
+		  width: 300,
+		  'height': 200,
+		  "мама мыла раму": true
+		};
+	В консоли объект выводится по последнему состоянию 
+	(даже если был выведен 100500 строк кода назад)
+	
+	удаление поля:
+		delete obj.member
+	проверка на существование поля:
+		if("name" in person)
+	если поля нет - то вернется undefined
+		obj.unexpectedmember //undefined
+
+	обход
+		for(key in obj)
+	идет в порядке объявления (если строки не являются числами)
+	числа сортируются
+	строки вида "+38" не подвергнутся сортировке, и приводятся к числу:
+		+"+38" //38
+
+	Object.keys(obj):
+		var obj = {a:1, b:2};
+		Obj.keys(obj); // ['a', 'b']
+
+	Свойства объекта (работает аналогично Q_PROPERTY)
+	 Object.defineProperty(obj, prop, descriptor)
+	 Дескриптор — объект, который описывает поведение свойства.
+	 В нём могут быть следующие поля:
+	  value — значение свойства, по умолчанию undefined
+	  writable — значение свойства можно менять, если true. По умолчанию false.
+	  configurable — если true, то свойство можно удалять, а также менять его в дальнейшем при помощи новых вызовов defineProperty. По умолчанию false.
+	  enumerable — если true, то свойство будет участвовать в переборе for..in. По умолчанию false.
+	  get — функция, которая возвращает значение свойства. По умолчанию undefined. //справа от присваивания. Вызывается как переменная-член без скобок
+	  set — функция, которая записывает значение свойства. По умолчанию undefined. //слева от присваивания. Вызывается как переменная-член без скобок
+	 Запрещено одновременно указывать значение value и функции get/set. Либо значение, либо функции для его чтения-записи, одно из двух. 
+	 Также запрещено и не имеет смысла указывать writable при наличии get/set-функций
+
+	Геттеры и сеттеры можно объявлять почти как методы:
+		var user = {
+		  firstName: "Вася",
+		  surname: "Петров",
+		  get fullName() {
+		    return this.firstName + ' ' + this.surname;
+		  },
+		  set fullName(value) {
+		    var split = value.split(' ');
+		    this.firstName = split[0];
+		    this.surname = split[1];
+		  }
+		};
+		user.fullName //вернет "Вася Петров"
+		user.fullName = "Petya Ivanov" //все сработает
+
+	Object.defineProperties(obj, descriptors) - descriptors - это {} пар prop-descriptor
+	Object.keys(obj) //ok, 
+	Object.getOwnPropertyNames(obj)//вернет вообще все, даже не-enumerable
+	Object.getOwnPropertyDescriptor(obj, prop)
+	Object.preventExtensions(obj) //после этого свойства больше не добавить
+	Object.seal(obj) //после этого свойства больше не добавить, не удалить, все становятся не-configurable
+	Object.freeze(obj) //как прошлый + запрет изменения, все свойства становятся не-writable
+	Object.isExtensible(obj), 
+	Object.isSealed(obj), 
+	Object.isFrozen(obj)
+
+		var obj = {}
+		var obj = Object.create(null)
+	Это будут два разных объекта. Например в первом есть метод toString
+
+
+Статические члены:
+	имеем класс Animal
+		Animal.count = 0; //вот статическое свойство класса
+	из статических методов читаем статические свойства через this
+
+
+Методы объектов:
+	object.method() // объект-точка-метод-скобки порождает значение 
+	специального типа Reference Type (base-name-strict)
+	без скобок просто получаем name и используем, без привязки к base
+		user.hi(); // this - это user
+		(user.name == "Вася" ? user.hi : user.bye)(); // this - это хз что
+	через [] работает аналогично
+	в setTimeout this тоже теряется. Чтобы не терялся юзаем bind
+		setTimeout(user.sayHi.bind(user), 1000); //тогда сохранится user как this,
+												 //и его состояние на момент setTimeout
+
+	func.call(context, arg1, arg2, ...) = context.call(arg1, arg2...)
+		var join = [].join; // скопируем ссылку на функцию в переменную
+		var argStr = join.call(arguments, ':'); //и вызовем ее для arguments
+		//Можно еще так:
+		var args = [].slice.call(arguments);
+	func.call(context, arg1, arg2) идентичен вызову func.apply(context, [arg1, arg2])
+
+
+Массивы:
+	pop(), push() - возвращает полученную длину (остальные методы надо проверить)
+	shift() //то же самое что pop_front()
+	unshift() //то же самое что push_front()
+	push и unshift могут принимать несколько агрументов
+		var fruits = ["Яблоко"];
+		fruits.push("Апельсин", "Персик");
+		fruits.unshift("Ананас", "Лимон");
+		// результат: ["Ананас", "Лимон", "Яблоко", "Апельсин", "Персик"]
+
+	для обхода не использовать for in!
+	можно назначать length
+		var arr = [1,2,3];
+		arr.length = 2; //arr = [1,2]
+		arr.length = 3; //arr = [1, 2, undefined]
+
+	new Array(param1, param2, ...) эквивалентен
+	[param1, param2]
+	НО: new Array(param1) создаст массив из undefined длиной param1
+
+	split(symbol, num):
+		"a,b,c,d".split(',', 2); // 'a', 'b'
+		"abcd".split(''); // 'a', 'b', 'c', 'd'
+	join(sym):
+		[1, 2, 3].join('+'); // '1+2+3'
+		new Array(4).join("ля"); // ляляля
+	splice(index[, deleteCount, elem1, ..., elemN]):	
+		var arr = ["Я", "изучаю", "JavaScript"];	
+		var res = arr.splice(1, 1); // начиная с позиции 1, удалить 1 элемент
+		res; // [ 'изучаю' ]
+		arr; // ["Я", "JavaScript"]
+
+		var arr = ["Я", "изучаю", "JavaScript"]; //вставка элементов
+		arr.splice(2, 0, "сложный", "язык");
+		arr; // "Я", "изучаю", "сложный", "язык", "JavaScript"
+
+		//отрицательные номера отсчитываются с конца
+	slice(begin, end): копирует участок массива от begin до end, не включая end. 
+	 Исходный массив при этом не меняется
+	sort(): по умолчанию приводит все к строке
+		sort(function(a, b) {
+			//Она должна возвращать:
+			//Положительное значение, если a > b,
+			//Отрицательное значение, если a < b,
+			//Если равны — можно 0, но вообще — не важно, что возвращать, их взаимный порядок не имеет значения.
+		})
+	reverse()
+	concat(param1, param2 ...): param может быть массивом, тогда добавится не массив, а элементы из массива
+		var arr = [1, 2];
+		var newArr = arr.concat([3, 4], 5); //[1, 2, 3, 4, 5]
+	indexOf(searchElement[, fromIndex]) - используется строгое сравнение ===
+	lastIndexOf(searchElement[, fromIndex]) - используется строгое сравнение ===
+
+Date, Time:
+	new Date(msecs) - c 01.01.1970 GMT+0
+	new Date(datestring)
+	new Date(year, month, date, hours, minutes, seconds, ms) - первые два обязательны
+	 остальные - (year, month, date=1, hours=0, minutes=0, seconds=0, ms=0)
+	 year - 4 цифры, month = от 0 до 11
+	getFullYear(), getMonth(), getDate(), getHours(), getMinutes(), getSeconds(), getMilliseconds()
+	getDay() - номер дня в неделе от 0 до 6
+	есть аналогичные сеттеры, есть все эти методы в UTC (GMT+0)
+	toLocaleString(локаль, опции)
+	toString(), toDateString(), toTimeString()
+	parse(str)
+	now(): он аналогичен вызову +new Date(), но в отличие от него 
+	 не создаёт промежуточный объект даты, а поэтому — во много раз быстрее
+	при бинарном + используется toString, а не valueOf
+
+
+Цикл:
+	решение задачки: 
+		for (var i = 0; i < 10; i++) {
+		    var shooter = function(cur) {
+		    	return function() { // функция-стрелок
+		      		alert( cur ); // выводит свой номер
+		    	};
+		    } (i);
+		    shooters.push(shooter);
+		}
+
+Декораторы:
+		function decorate(f) {
+		  return function() {
+		    return f.apply(this, arguments);
+		  }
+		}		
+		function Func() {};
+		Func = decorate(Func);
+
+
+  Декоратор для проверки типов входных данных:
+  	https://learn.javascript.ru/decorators
+  	Можно использовать чтобы эмулировать строгую типизацию в вызовах функций
+  Декортаор для проверки прав
+
+
+  bind:
+	позволяет привязать контекст к функции:
+		function f() {
+			console.log(this);
+		}
+		var g = f.bind("Context");
+		f() //выведется 'Context'
+
+	синтаксис:
+		var wrapper = func.bind(context[, arg1, arg2...])
+		//arg1, arg2... будут добавлены _перед_ явно переданными аргументами
+
+	если мы просто создаем функцию, в которой какие-то из аргументов будут дефолтными
+	 - то это называется карринг (или каррирование)
+	пример:
+		function mul(a,b); //перемножает два аргумента
+		var double = mul.bind(null, 2); //умножает один аргумент на 2
+
+  apply:
+  	Форвардинг вызова (если мы вызываем функцию через к-л декоратор
+  	то чтобы изнутри все выглядело будто нет никакого декоратора)
+  		var result = f.apply(this, arguments);
+
+[[Class]]
+	Если написать
+		{}.toString.call(date) // [object Date] - здесь Date - это значение секретного свойства [[Class]]
+	можно выдрать это свойство через {}.toString.call(obj).slice(8, -1).
+	Рабьотает только для встроенных типов
+
+Array.isArray(arr) //тут все понятно
+
+instanceof
+		user instanceof User // проверка класса, работает не только для встроенных
+							 // при проверке на базовый класс у инстанса наследника <<дополнить позднее>>	
+
+JSON
+	прокатывают только двойные кавычки
+	JSON.parse(str, reviver) - второй аргумент необязательный
+	 это функция(key, value) -> value которая может пропарсить значение
+
+	JSON.stringify(value, replacer, space) 
+	при этом у всех объектов вызывается метод toJSON()
+	replacer - массив тех свойств, которые мы хотим добавить
+			   либо функция replacer(key, value) -> value
+		JSON.stringify(user, function(key, value) {
+		  if (key == 'window') return undefined;
+		  return value;
+		});
+		JSON.stringify(user, ["name", "age"])
+	space - количество пробелов в отступе (влияет только на красоту)
+
+setTimeout(func / code, delay[, arg1, arg2...]) -> timerId
+	аргументы передадутся функции, необязательный параметр
+	отменить можно через clearTimeout(timerId)
+
+	аналогично: setInterval/clearInterval //тут учитывается время _между_стартами_функций_
+		//кроме IE, который считает время между концом прошлой и стартом следующей
+		//чтобы в остальных было как в IE - делаем рекурсивный setTimeout
+
+	во время показа алертов в браузере этот таймер может заморозиться
+	 (opera/chrome/safari) а может и нет (IE firefox)
+
+	Все эти дела опасны в плане утечек памяти 
+	 пока активен таймер - то не чистится функция и ее замыкание
+
+	setInterval(.., 0) //в IE не сработает, в остальных сработает с минимальной задержкой (обычно это 4мс в новых и 15мс в старых)
+
+	если вкладка неактивна - таймер будет срабатывать реже (зависит от браузера)
+
+	можно использовать setTimeout на долгих задачах чтобы иногда возвращать управление браузеру и чтобы он не подвисал
+
+eval
+	без "use strict" запускает код в текущей области видимости
+	с ней - создается своя (внешние функции и переменные читать/писать можно,
+	 внутри объявленные внутри и останутся)
+	можно еще через new Function("arg1, arg2...","code")
+
+try catch
+	как в плюсах:
+		try {}
+		catch(err) {}
+		finally {}
+		//у err есть свойства name, message, stack (есть еще, зависит от браузера)
+	из асинхронно запущенных методов ничего не поймает
+	finally выполняется всегда: если в try/catch есть return, то finally выполнится перед ретурном
+
+	если что, выкидываем throw err; //err = объект как надо, но в принципе может быть и 
+									//просто число или строка
+	В JavaScript встроен ряд конструкторов для стандартных ошибок: 
+	SyntaxError, ReferenceError, RangeError и некоторые другие. 
+	"Проброс ошибки":
+	 если мы в cfnch-блоке не знаем как обработать ошибку - то можем выкинуть ее дальше через throw
+	 тогда она либо обработается во внешнем обработчике, либо повалит скрипт
+	"Оборачивание исключения":
+	 Мы пробрасываем ошибку, обрабатываемую во внешнем коде, но в нее запихиваем исходную ошибку
+	 чтобы внешний код имел о ней представление
+
+window.onerror:
+	функция в браузерах, которая вызывается при необрабатываемой ошибке
+	window.onerror = function(message, url, lineNumber);
+
+Наследование (функциональный паттерн):
+		function Machine(power) {}
+		function CoffeeMachine(power) {
+	  		Machine.apply(this, arguments);
+	  	}
+	Если делать таким макаром, то приватные поля Machine будут 
+	не видны в CoffeeMachine.
+	Условились протектед-члены делать как публичные, но имя начинается с _
+
+	Переопределение методов:
+		var parentMethod = this.method;
+		this.method = function() {
+		    parentMethod.call(this); //здесь если method родителя не забинден на this - 
+		    						 //то все сломается к пизде. Для этого юзаем call
+		    //свой код
+		}
+	Соответственно, если родительский метод вообще не нужен - то просто переопределяем
+
+Наследование (прототипный паттерн):
+	__proto__ : (когда объявляем объекты без new)
+		var animal = {};
+		var rabbit = {};
+		rabbit.__proto__ = animal;
+	при переборе полей через for in будут перебираться все -
+	 и собственные, и прототипные. Проверка на собственность - hasOwnProperty()
+
+	помимо простого обращения obj.__proto__ есть методы
+	 Object.getPrototypeOf(obj) и Object.setPrototypeOf(obj, proto),
+	 Object.create(proto, descriptors) - второе - девкрипторы свойств.
+
+	Множественного наследования таким образом нет, реализовывать через цепочку наследования
+
+	prototype : (когда объекты объявляются через new)
+		var animal = {};
+		function Rabbit(name) {}
+		Rabbit.prototype = animal;
+		var rabbit = new Rabbit();
+
+	у любого prototype есть конструктор, этим можно пользоваться:
+		var rabbit = new Rabbit();
+		var rabbit2 = new rabbit.constructor();
+	этот конструктор легко потерять:
+		Rabbit.prototype = { jumps: true } //всё, конструктора больше нет
+
+	А вообще классы объявляем как в видосе с udacity:
+		Rabbit.prototype = Object.create(Animal.prototype);
+		//это пишем ДО объявления остальных методов в прототипе, а то они затрутся
+		Rabbit.prototype.constructor = Rabbit; 
+		//это если мы собираемся потом использовать конструктор из прототипа
+
+	Вызов родительского конструктора из дочернего:
+		function Rabbit(name) {
+		  Animal.apply(this, arguments);
+		}
+
+	Вызов родительских методов из дочерних примерно так же:
+		Rabbit.prototype.run = function() {
+		   Animal.prototype.run.apply(this, arguments);
+		   this.jump();
+		 }
+
+	instanceof:
+		rabbit instanceof Rabbit //вернет true
+		rabbit instanceof Animal //вернет true
+
+ES6:
+	let - область видимости - блок {}, в цикле для каждой итерации создается своя новая переменная
+	const - как let, только упадет если слева от оператора присваивания
+
+	можно почти как в питоне:
+		let [firstName, lastName] = ["Илья", "Кантор"];
+		firstName; //"Илья"
+	Остаток массива выдергиваем так:
+		let [firstName, lastName, ...rest] = "Юлий Цезарь Император Рима".split(" ");
+		rest; // ["Император", "Рима"]
+	Можно ставить дефолтные значения:
+		let [firstName="Гость", lastName="Анонимный"] = [];
+	С объектами тоже прокатит:
+		let options = {
+		  title: "Меню",
+		  width: 100,
+		  height: 200
+		};
+		let {title, width, height} = options;
+		title; //"Меню"
+		let {width: w, height: h, title} = options;
+		w; //100
+		let {width: w, height: h, title, somevar = 100500} = options;
+		somevar; //100500
+	Нюанс:
+		let a, b;
+		{a, b} = {a:5, b:6};//Выражение внутри {} будет воспринято как блок кода
+	  надо так:
+	  	({a, b} = {a:5, b:6});
+	Можно вкладывать конструкции друг в друга:
+		let options = {
+		  size: {
+		    width: 100,
+		    height: 200
+		  },
+		  items: ["Пончик", "Пирожное"]
+		}
+		let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
+		alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
+	Можно такое же делать в параметрах функций
+		function showMenu({title, width, height}) {};
+
+	В функции можно объявлять параметры по умолчанию. Тогда все, что undefined будет заменяться дефолтным значением
+
+	Можно объявить вот так:
+		function showName(firstName, lastName, ...rest)
+	  это избавит от arguments
+
+	... можно использовать и при вызове функции:
+		let numbers = [2, 3, 15];
+		Math.max(...numbers); //все равно что Math.max.apply(Math, numbers);
+
+	У функций появилось поле name
+		function func() {};
+		func.name; //"func"
+	  или даже 
+	  	let func = function() {}; //тоже будет name = "func"
+
+	У функций, объявленных черех function declaration видимость теперь блочная
+
+	=> :
+		let inc = x => x+1; //все равно что let inc = function(x) {return x+1;};
+		let sum = (a,b) => a + b;
+		let getTime = () => "";
+		let getTime = () => {f1(); f2(); return ""};
+	  в таких функциях нет своего this (он берется из вызвавшего кода)
+	  еще нет своего arguments
+
+	Строки:
+		` (обратная кавычка) - можно многострочные строки, вставлять выражения через ${varname}
+
+
+============= YDKJS =================
