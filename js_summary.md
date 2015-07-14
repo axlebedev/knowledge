@@ -15,10 +15,11 @@
     +Null; //0
     +''; //0
     +'123'; //123
+    +'+38'; //38
     +'abc'; //NaN
     +undefined //NaN
 
-Бинарный **+** приводит к _Number_.
+Бинарный **+** приводит к _Number_.  
 Если один из аргументов - _String_, то приводит все к _String_
 и делает конкатенацию.
 
@@ -153,7 +154,7 @@ _Хитрый пример:_
 Подстрока:
 
     substring(start, end);
-Если _start_ > _end_ то они меняются местами.
+Если _start_ > _end_ то они меняются местами.  
 Если _start_ < 0 то _start_ = 0, аналогично с _end_.
 
     substr(start [, length]);
@@ -196,3 +197,101 @@ _arguments_ лучше не изменять, потому что изменят
 _f(options)_, где _options = {arg1: 1, arg3: 4}_.
 
 //TODO: https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/
+
+###Объекты
+Всегда и везде передаются по ссылке!  
+~~В консоли браузера объект выводится по текущему состоянию (даже если был выведен
+100500 лет назад)~~
+
+Это будут два разных объекта. Например в первом есть метод toString():
+
+    var obj = {};
+    var obj = Object.create(null);
+
+
+    if('member' in person) func();//проверка на существование поля
+    delete obj.member;
+    obj.member; //undefined
+Обход полей объекта: при таком обходе сначала идут отсортированные числа, потом -
+строки в порядке объявления. Если мы не хотим сортировать строки вида '12'
+(числа) - то пишем их как '+12' - тогда они и сортироваться не будут, и прекрасно приводятся к число
+
+    for(key in obj)
+
+**Геттеры и сеттеры**
+
+    var user = {
+      firstName: "Вася",
+      surname: "Петров",
+      get fullName() {
+        return this.firstName + ' ' + this.surname;
+      },
+      set fullName(value) {
+        var split = value.split(' ');
+        this.firstName = split[0];
+        this.surname = split[1];
+      }
+    };
+    user.fullName //вернет "Вася Петров"
+    user.fullName = "Petya Ivanov" //все сработает
+
+**Свойства объекта** (работает аналогично Q_PROPERTY)
+
+    Object.defineProperty(obj, prop, descriptor)
+Дескриптор — объект, который описывает поведение свойства.
+В нём могут быть следующие поля:  
+`value` — значение свойства, по умолчанию undefined.  
+`writable` — значение свойства можно менять, если true. По умолчанию false.  
+`configurable` — если true, то свойство можно удалять, а также менять его в дальнейшем при помощи новых вызовов defineProperty. По умолчанию false.  
+`enumerable` — если true, то свойство будет участвовать в переборе for..in. По умолчанию false.  
+`get` — функция, которая возвращает значение свойства. По умолчанию undefined. //справа от присваивания. Вызывается как переменная-член без скобок  
+`set` — функция, которая записывает значение свойства. По умолчанию undefined. //слева от присваивания. Вызывается как переменная-член без скобок  
+Запрещено одновременно указывать значение value и функции get/set. Либо значение, либо функции для его чтения-записи, одно из двух.  
+Также запрещено и не имеет смысла указывать writable при наличии get/set-функций  
+
+**Статические члены**
+Имеем класс Animal.
+
+    Animal.count = 0; //вот статическое свойство класса
+    Animal.setCount = function(n) {
+        this.count = n;
+    } //доступ из статических методов к статическим полям через this.
+
+**Методы объекта**
+
+    Object.defineProperties(obj, descriptors); //descriptors - это {} пар prop-descriptor
+	Object.keys(obj);
+	Object.getOwnPropertyNames(obj); //вернет вообще все, даже не-enumerable
+	Object.getOwnPropertyDescriptor(obj, prop);
+	Object.preventExtensions(obj); //после этого новые свойства больше не добавить
+    Object.isExtensible(obj);
+	Object.seal(obj); //после этого свойства больше не добавить, не удалить, все становятся не-configurable
+    Object.isSealed(obj);
+	Object.freeze(obj); //как прошлый + запрет изменения, все свойства становятся не-writable
+	Object.isFrozen(obj);
+
+**_this_ в методах объекта**  
+Вызов `obj.method()` (объект-точка-метод-скобки)  
+или `obj[method]()` (объект-метод в квадратных скобках-скобки)  
+порождает значение специального типа _Reference Type_ (base-name-strict):  
+  * _base_ — как раз объект,  
+  * _name_ — имя свойства,  
+  * _strict_ — вспомогательный флаг для передачи use strict.
+Без скобок (`obj.method`) просто получаем name и используем, без привязки к base
+
+    user.hi(); // this - это user
+    (user.name == "Вася" ? user.hi : user.bye)(); // this - это хз что
+
+**bind**:  
+`method.bind(object)`
+Вот так мы сохраним user как this, и его состояние на момент setTimeout
+    setTimeout(user.sayHi.bind(user), 1000);
+
+**call**:  
+`func.call(object, arg1, arg2)` = func(arg1, arg2) с явно указанным this = object
+
+    var join = [].join; // скопируем ссылку на функцию в переменную
+    var argStr = join.call(arguments, ':'); //и вызовем ее для arguments
+**apply**:
+`func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`.  
+Только передаются не отдельные аргументы, а массив аргументов.
