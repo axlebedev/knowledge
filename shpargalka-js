@@ -27,24 +27,6 @@
 	https://learn.javascript.ru/testing
 
 Массивы:
-	pop(), push() - возвращает полученную длину (остальные методы надо проверить)
-	shift() //то же самое что pop_front()
-	unshift() //то же самое что push_front()
-	push и unshift могут принимать несколько агрументов
-		var fruits = ["Яблоко"];
-		fruits.push("Апельсин", "Персик");
-		fruits.unshift("Ананас", "Лимон");
-		// результат: ["Ананас", "Лимон", "Яблоко", "Апельсин", "Персик"]
-
-	для обхода не использовать for in!
-	можно назначать length
-		var arr = [1,2,3];
-		arr.length = 2; //arr = [1,2]
-		arr.length = 3; //arr = [1, 2, undefined]
-
-	new Array(param1, param2, ...) эквивалентен
-	[param1, param2]
-	НО: new Array(param1) создаст массив из undefined длиной param1
 
 	split(symbol, num):
 		"a,b,c,d".split(',', 2); // 'a', 'b'
