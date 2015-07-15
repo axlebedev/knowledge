@@ -198,6 +198,20 @@ _f(options)_, где _options = {arg1: 1, arg3: 4}_.
 
 //TODO: https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/
 
+
+#####Декораторы:
+https://learn.javascript.ru/decorators
+
+    function decorate(f) {
+        //some code...
+        return function() {
+            return f.apply(this, arguments);
+        }
+    }
+    function Func() {};
+    Func = decorate(Func);
+**Примеры использования:** Проверка типов входных данных, проверка прав и т.д.
+
 ###Массивы
 
     var arr1 = [10]; //Массив из одного элемента равного 10
