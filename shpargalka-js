@@ -26,41 +26,6 @@
 Автоматическое тестирование:
 	https://learn.javascript.ru/testing
 
-Массивы:
-
-	split(symbol, num):
-		"a,b,c,d".split(',', 2); // 'a', 'b'
-		"abcd".split(''); // 'a', 'b', 'c', 'd'
-	join(sym):
-		[1, 2, 3].join('+'); // '1+2+3'
-		new Array(4).join("ля"); // ляляля
-	splice(index[, deleteCount, elem1, ..., elemN]):
-		var arr = ["Я", "изучаю", "JavaScript"];
-		var res = arr.splice(1, 1); // начиная с позиции 1, удалить 1 элемент
-		res; // [ 'изучаю' ]
-		arr; // ["Я", "JavaScript"]
-
-		var arr = ["Я", "изучаю", "JavaScript"]; //вставка элементов
-		arr.splice(2, 0, "сложный", "язык");
-		arr; // "Я", "изучаю", "сложный", "язык", "JavaScript"
-
-		//отрицательные номера отсчитываются с конца
-	slice(begin, end): копирует участок массива от begin до end, не включая end.
-	 Исходный массив при этом не меняется
-	sort(): по умолчанию приводит все к строке
-		sort(function(a, b) {
-			//Она должна возвращать:
-			//Положительное значение, если a > b,
-			//Отрицательное значение, если a < b,
-			//Если равны — можно 0, но вообще — не важно, что возвращать, их взаимный порядок не имеет значения.
-		})
-	reverse()
-	concat(param1, param2 ...): param может быть массивом, тогда добавится не массив, а элементы из массива
-		var arr = [1, 2];
-		var newArr = arr.concat([3, 4], 5); //[1, 2, 3, 4, 5]
-	indexOf(searchElement[, fromIndex]) - используется строгое сравнение ===
-	lastIndexOf(searchElement[, fromIndex]) - используется строгое сравнение ===
-
 Date, Time:
 	new Date(msecs) - c 01.01.1970 GMT+0
 	new Date(datestring)
