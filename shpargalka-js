@@ -27,45 +27,6 @@
 		    shooters.push(shooter);
 		}
 
-Декораторы:
-		function decorate(f) {
-		  return function() {
-		    return f.apply(this, arguments);
-		  }
-		}
-		function Func() {};
-		Func = decorate(Func);
-
-
-  Декоратор для проверки типов входных данных:
-  	https://learn.javascript.ru/decorators
-  	Можно использовать чтобы эмулировать строгую типизацию в вызовах функций
-  Декортаор для проверки прав
-
-
-  bind:
-	позволяет привязать контекст к функции:
-		function f() {
-			console.log(this);
-		}
-		var g = f.bind("Context");
-		f() //выведется 'Context'
-
-	синтаксис:
-		var wrapper = func.bind(context[, arg1, arg2...])
-		//arg1, arg2... будут добавлены _перед_ явно переданными аргументами
-
-	если мы просто создаем функцию, в которой какие-то из аргументов будут дефолтными
-	 - то это называется карринг (или каррирование)
-	пример:
-		function mul(a,b); //перемножает два аргумента
-		var double = mul.bind(null, 2); //умножает один аргумент на 2
-
-  apply:
-  	Форвардинг вызова (если мы вызываем функцию через к-л декоратор
-  	то чтобы изнутри все выглядело будто нет никакого декоратора)
-  		var result = f.apply(this, arguments);
-
 [[Class]]
 	Если написать
 		{}.toString.call(date) // [object Date] - здесь Date - это значение секретного свойства [[Class]]
