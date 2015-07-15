@@ -271,6 +271,10 @@ _f(options)_, где _options = {arg1: 1, arg3: 4}_.
 
     for(key in obj)
 
+**Приведение к строке и числу** реализуется переопределением методов
+`valueOf()` и `toString()`. Они необязательно должны возвращать именно
+_Number_ и _String_, любой примитив. Он потом будет приведен дополнительно
+
 **Геттеры и сеттеры**
 
     var user = {
@@ -348,3 +352,18 @@ _f(options)_, где _options = {arg1: 1, arg3: 4}_.
 **apply**:
 `func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`.  
 Только передаются не отдельные аргументы, а массив аргументов.
+
+####Date, Time
+`new Date()` - вернет текущее время.
+`Date(msecs)` - c 01.01.1970 GMT+0
+`Date(datestring)`
+`Date(year, month, date=1, hours=0, minutes=0, seconds=0, ms=0)`
+_year_ - 4 цифры, _month_ = от 0 до 11
+`getFullYear()`, `getMonth()`, `getDate()`, `getHours()`, `getMinutes()`, `getSeconds()`, `getMilliseconds()`, `getDay()` - номер дня в неделе от 0 до 6.  
+Есть аналогичные сеттеры, есть аналогичные методы для UTC  
+`toLocaleString(локаль, опции)`
+`toString()`, `toDateString()`, `toTimeString()`
+`parse(str)`
+`now()`: он аналогичен вызову _+new Date()_, но в отличие от него
+не создаёт промежуточный объект даты, а поэтому — во много раз быстрее
+при бинарном **+** используется _toString_, а не _valueOf_

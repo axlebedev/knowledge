@@ -13,35 +13,8 @@
 
 4.	https://learn.javascript.ru/oop-errors
 
-Численное преобразование
-	переопределяем метоод valueOf(). не обязательно возвращать number, любой примитив
-	(string, bool etc) который потом будет преобразован к число
-
-Строковое преобразование
-	Кастомное преобразование к строке получается переопределением метода toString()
-	оно может возвращать любой примитив, не обязательно string. Потом это к строке
-	приведется дополнительно
-
-
 Автоматическое тестирование:
 	https://learn.javascript.ru/testing
-
-Date, Time:
-	new Date(msecs) - c 01.01.1970 GMT+0
-	new Date(datestring)
-	new Date(year, month, date, hours, minutes, seconds, ms) - первые два обязательны
-	 остальные - (year, month, date=1, hours=0, minutes=0, seconds=0, ms=0)
-	 year - 4 цифры, month = от 0 до 11
-	getFullYear(), getMonth(), getDate(), getHours(), getMinutes(), getSeconds(), getMilliseconds()
-	getDay() - номер дня в неделе от 0 до 6
-	есть аналогичные сеттеры, есть все эти методы в UTC (GMT+0)
-	toLocaleString(локаль, опции)
-	toString(), toDateString(), toTimeString()
-	parse(str)
-	now(): он аналогичен вызову +new Date(), но в отличие от него
-	 не создаёт промежуточный объект даты, а поэтому — во много раз быстрее
-	при бинарном + используется toString, а не valueOf
-
 
 Цикл:
 	решение задачки:
