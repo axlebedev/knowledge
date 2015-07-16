@@ -632,32 +632,33 @@ https://learn.javascript.ru/testing
   	({a, b} = {a:5, b:6});//а тут норм
 
   * Можно вкладывать конструкции друг в друга:
-    let options = {
-        size: {
-            width: 100,
-            height: 200
-        },
-        items: ["Пончик", "Пирожное"]
-    }
-    let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
-    alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
+
+            let options = {
+                size: {
+                    width: 100,
+                    height: 200
+                },
+                items: ["Пончик", "Пирожное"]
+            }
+            let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
+            alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
 
 5. Генерирование объектов  
 Можно при вызове функций генерить объект на ходу:
 
-	function showMenu({title, width, height}) {};
+	   function showMenu({title, width, height}) {};
 
 6. Аргументы по умолчанию  
 В функции можно объявлять параметры по умолчанию (синтаксис как в плюсах).
-Тогда все, что undefined будет заменяться дефолтным значением.
+Тогда все, что _undefined_ будет заменяться дефолтным значением.
 _null_ и _NaN_ заменяться не будут.
 
 7. Функции с переменным числом аргументов  
-Чтобы избавиться от _arguments_, можно объявить функцию с переменным числом аргументов:
+  Чтобы избавиться от _arguments_, можно объявить функцию с переменным числом аргументов:
 
-    function showName(firstName, lastName, ...rest)
+        function showName(firstName, lastName, ...rest)
 
-... можно использовать и при вызове функции:
+  ... можно использовать и при вызове функции:
 
 		let numbers = [2, 3, 15];
 		Math.max(...numbers); //все равно что Math.max.apply(Math, numbers);
@@ -665,10 +666,10 @@ _null_ и _NaN_ заменяться не будут.
 8. Function.name  
 У функций появилось поле _name_:
 
-	function func() {};
-	func.name; //"func"
-    //или даже
-  	let func = function() {}; //тоже будет name = "func"
+    	function func() {};
+    	func.name; //"func"
+        //или даже
+      	let func = function() {}; //тоже будет name = "func"
 
 9. У функций, объявленных черех function declaration видимость теперь блочная.
 
@@ -684,6 +685,9 @@ _null_ и _NaN_ заменяться не будут.
 11. Новый строковый литерал  
 \` (обратная кавычка):
 
-    var newstring = `lalala`
+        var newstring = `lalala`
  - допустимо делать многострочную строку
- - вставлять выражения через ${varname} или даже ${arg1 + arg2} например.
+ - вставлять выражения через _${varname}_ или даже _${arg1 + arg2}_ например.
+
+            var a = 1, b = 2;
+            var string = `${a} + ${b} = ${a+b}`;
