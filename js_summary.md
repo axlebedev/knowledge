@@ -47,6 +47,38 @@ _NaN_ не равен вообще ничему.
     'ёжик' < 'ящик'; //false
     'ёжик'.localeCompare('ящик'); //-1, т.е. меньше
 
+Объекты и массивы сравниваются не по содержимому, а на равенство указателей!
+
+    var a = {};
+    a  == {};	// false
+    a === {};	// false
+    a  == a;	// true
+    a === a;	// true
+
+Но если определены _valueOf_ или _toString_, то нестрого сравнить можно:
+
+    var num = {
+        val: 5,
+        valueOf: function() {return this.val;}
+    }
+    5 == num; //true
+    5 === num; //false
+
+
+    var str = {
+        val: 'abc',
+        toString: function() {return this.val;}
+    }
+    'abc' == str; //true
+    'abc' === str;//false
+
+    new Number(5)  == 5;// true
+    new Number(5) === 5;// false
+    
+    (function(){
+        this  == 5;	// true
+        this === 5;	// false
+    }).call(5);
 ####Побитовые операторы
 **~, &, |, ^, >>, >>>, <<**.
 
@@ -88,7 +120,7 @@ _[], {}_ и все остальное => true
 
 ####eval
 Без _"use strict"_ запускает код в текущей области видимости,  
-с _"use strict"_ - создается своя область видимости (внешние функции и
+с _"use strict"_ - создается своя область видимости (внешние ккции и
 переменные читать/писать можно, внутри объявленные внутри и останутся).
 
 ####Boolean
@@ -213,7 +245,7 @@ https://learn.javascript.ru/decorators
 Примеры использования: Проверка типов входных данных, проверка прав и т.д.
 
 #####bind:
-Позволяет привязать контекст (_this_) к функции:
+Позволяет привязать контекст (_this_) к функции, возвращает функцию:
 `var wrapper = func.bind(context[, arg1, arg2...])` - _arg1_, _arg2_...
 будут добавлены _перед_ явно переданными аргументами
 
@@ -222,6 +254,10 @@ https://learn.javascript.ru/decorators
     }
     var g = f.bind("Context");
     f() //выведется 'Context'
+
+В следующем примере мы сохраним _user_ как _this_, и его состояние на момент _setTimeout_:
+
+    setTimeout(user.sayHi.bind(user), 1000);
 
 Если мы просто создаем функцию, в которой какие-то из аргументов будут
 дефолтными - то это называется _карринг_ (или _каррирование_).
@@ -235,6 +271,17 @@ _Форвардинг вызова_ - вызываем функцию через
 чтобы изнутри все выглядело будто нет никакого декоратора.
 
     var result = f.apply(this, arguments);
+
+#####call:  
+`func.call(object, arg1, arg2)` = _func(arg1, arg2)_ с явно указанным _this = object_.  
+Возвращает результат вызова функции
+
+    var join = [].join; // скопируем ссылку на функцию в переменную
+    var argStr = join.call(arguments, ':'); //и вызовем ее для arguments
+
+#####apply:  
+`func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`.  
+Только передаются не отдельные аргументы, а массив аргументов.
 
 ###Области видимости
 Задачка с циклом:
@@ -387,24 +434,6 @@ _Number_ и _String_, любой примитив. Он потом будет п
 
         user.hi(); // this - это user
         (user.name == "Вася" ? user.hi : user.bye)(); // this - это хз что
-
-**bind**:  
-`method.bind(object)` возвращает функцию.
-
-    var bindedMethod = petya.method(vasya);
-В следующем примере мы сохраним _user_ как _this_, и его состояние на момент _setTimeout_:
-
-    setTimeout(user.sayHi.bind(user), 1000);
-
-**call**:  
-`func.call(object, arg1, arg2)` = _func(arg1, arg2)_ с явно указанным _this = object_.  
-Возвращает результат вызова функции
-
-    var join = [].join; // скопируем ссылку на функцию в переменную
-    var argStr = join.call(arguments, ':'); //и вызовем ее для arguments
-**apply**:  
-`func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`.  
-Только передаются не отдельные аргументы, а массив аргументов.
 
 **[[Class]]**  
 Если написать:

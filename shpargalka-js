@@ -3,15 +3,47 @@
 ПЕРЕПРОЧИТАТЬ:
 1.	https://learn.javascript.ru/array-iteration
 
-2.	бинарный + например массива и числа к чему приводит?
-		приводит к строке
-
 3.		var a = new function() {
 		  	this.b = 2;
 		} //работает как конструктор
 		alert(a.b);
+ОТВЕТ: потому что new bla; это все равно что new bla(); - без аргументов
 
 4.	https://learn.javascript.ru/oop-errors
 
-ES6:
+5. Реализуется наследование через неявную(внутреннюю) ссылку одного объекта на другой, который называется его прототипом и в спецификации обозначается [[prototype]]. Это свойство обычно скрыто от программиста
+Также существует свойство с похожим названием prototype (без квадратных скобок) - оно вспомогательное и указывает, откуда брать прототип при создании объекта
+Доступ к [[prototype]] мб осуществлен через __proto__
+
+6. Extend
+function extend(Child, Parent) {
+    var F = function() { }
+    F.prototype = Parent.prototype
+    Child.prototype = new F()
+    Child.prototype.constructor = Child
+    Child.superclass = Parent.prototype
+}
+
+7. Паразитическое наследование http://javascript.ru/tutorial/object/inheritance
+!!!Для такого не работает instanceof
+
+8. Утечки памяти http://learn.javascript.ru/memory-leaks
+
+9. jQuery.proxy
+http://habrahabr.ru/post/149581/
+И вообще разобрать подробнее call apply bind по этой статье
+
+10. for in и for of
+
+11. Поправить каррирование, отличие от частичного применения
+https://msdn.microsoft.com/ru-ru/subscriptions/gg575560.aspx
+
+
+13.
+for(var i = 0; i < 1000000; ++i)
+	в два раза медленнее чем
+for(var i = 1000000;i--;)
+http://habrahabr.ru/post/49052/
+
+
 ============= YDKJS =================
