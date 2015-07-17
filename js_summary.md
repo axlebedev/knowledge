@@ -478,6 +478,29 @@ _Number_ и _String_, любой примитив. Он потом будет п
  и собственные, и прототипные.  
  Проверка на то что свойство принадлежит именно этому классу (а не родителю) - `hasOwnProperty()`.
 
+#####Паразитический паттерн  
+Для такого наследования не будет работать _instanceof_!  
+Суть: имеем фабрику _Animal_, объявляем другую фабрику _Rabbit_, который внутри себя вызовет _Animal_ и будет потом издеваться над полученным объектом.
+
+    function Animal() {
+        var private = 10
+        return {
+            public: 'public',
+            getter: function() {
+                return private;
+            }
+        }
+    }
+
+    function Rabbit() {
+        var me = Animal();
+        var anotherPrivate = 0;
+        me.publicMethod = function() {};
+        me.constructor = arguments.callee; //Не пропустить эту строчку
+        return me;
+    }
+
+
 Помимо простого обращения `obj.__proto__` есть методы:
  * `Object.getPrototypeOf(obj)`
  * `Object.setPrototypeOf(obj, proto)`
