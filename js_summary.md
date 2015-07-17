@@ -478,6 +478,17 @@ _Number_ и _String_, любой примитив. Он потом будет п
  и собственные, и прототипные.  
  Проверка на то что свойство принадлежит именно этому классу (а не родителю) - `hasOwnProperty()`.
 
+Готовый пример **Extend**:
+
+    function extend(Child, Parent) {
+        var F = function() { };
+        F.prototype = Parent.prototype;
+        Child.prototype = new F();
+        Child.prototype.constructor = Child;
+        Child.superclass = Parent.prototype; //это если мы потом захотим обратиться к методам родителя
+    }
+
+
 #####Паразитический паттерн  
 Для такого наследования не будет работать _instanceof_!  
 Суть: имеем фабрику _Animal_, объявляем другую фабрику _Rabbit_, который внутри себя вызовет _Animal_ и будет потом издеваться над полученным объектом.
