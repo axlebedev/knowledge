@@ -1,4 +1,12 @@
 =========== learn.javascript.ru ============
+ПЕРЕДЕЛАТЬ:
+блоки кода:
+```ruby
+require 'redcarpet'
+markdown = Redcarpet.new("Hello World!")
+puts markdown.to_html
+```
+
 
 ПЕРЕПРОЧИТАТЬ:
 1.	https://learn.javascript.ru/array-iteration
@@ -20,10 +28,24 @@ http://habrahabr.ru/post/149581/
 
 
 13.
+https://github.com/getify/You-Dont-Know-JS/blob/master/scope%20&%20closures/ch3.md
+
 for(var i = 0; i < 1000000; ++i)
 	в два раза медленнее чем
 for(var i = 1000000;i--;)
 http://habrahabr.ru/post/49052/
 
+Anonymous functions omit a name which is often helpful in providing more readable/understandable code. A descriptive name helps self-document the code in question.
+
+Inline function expressions are powerful and useful -- the question of anonymous vs. named doesn't detract from that. Providing a name for your function expression quite effectively addresses all these draw-backs, but has no tangible downsides. The best practice is to always name your function expressions:
+
+setTimeout( function timeoutHandler(){ // <-- Look, I have a name!
+    console.log( "I waited 1 second!" );
+}, 1000 );
+
+Immediately Invoked Function Expression
+(function f() {})()
+(function f() {}())
+Immediately Invoked Function Expression
 
 ============= YDKJS =================
