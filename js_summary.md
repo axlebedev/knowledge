@@ -2,184 +2,201 @@
 
 ###Debug
 Отсчет времени по метке:
-
-    console.time('1') //начнет отсчет времени
-    console.timeEnd('1') //закончит отсчет времени и выведет в консоль
-
+```JavaScript
+console.time('1') //начнет отсчет времени
+console.timeEnd('1') //закончит отсчет времени и выведет в консоль
+```
 ###Типы данных
 ####Арифметические операторы
-Унарный **+** приводит к _Number_.
+Унарный `+` приводит к _Number_.
 ```JavaScript
-    var arg = /*что угодно*/;
-    +arg; //Number
-    +null; //0
-    +''; //0
-    +'123'; //123
-    +'+38'; //38
-    +'abc'; //NaN
-    +undefined //NaN
+var arg = /*что угодно*/;
++arg; //Number
++null; //0
++''; //0
++'123'; //123
++'+38'; //38
++'abc'; //NaN
++undefined //NaN
 ```
-Бинарный **+** приводит к _Number_, если у обоих аргументов задан _valueOf_.  
+Бинарный `+` приводит к _Number_, если у обоих аргументов задан _valueOf_.  
 Если нет (объект, массив...) - то приводит все к _String_ и делает конкатенацию.
 
-Бинарные **- * /** приводят к _Number_.
+Бинарные `-`, `*`, `/` приводят к _Number_.
 
-Унарные **++** и **--** приводят к _Number_.
+Унарные `++` и `--` приводят к _Number_.
 
 ####Сравнение
-**==** - сравнение с приведением типов.
-**===** - строгое сравнение.
+`==` - сравнение с приведением типов.
+`===` - строгое сравнение.
 
 Если один из операндов - _Number_ или _Boolean_, то все приводится к числу,  
 если _String_ - то все приводится к строке.  
 _null_ и _undefined_ равны только друг другу (и самим себе).  
 _NaN_ не равен вообще ничему.
-
-    +0 === -0; //true
-    NaN == NaN; //false
-    null == undefined; //true
-    ['x'] == 'x'; //true
-    true == 1; //true
+```JavaScript
++0 === -0; //true
+NaN == NaN; //false
+null == undefined; //true
+['x'] == 'x'; //true
+true == 1; //true
+```
 
 Строки сравниваются по кодам символов. Чтобы сравнивать в алфавитном порядке,
-юзаем _str.localeCompare_
-
-    'ёжик' < 'ящик'; //false
-    'ёжик'.localeCompare('ящик'); //-1, т.е. меньше
+юзаем `str.localeCompare`:
+```JavaScript
+'ёжик' < 'ящик'; //false
+'ёжик'.localeCompare('ящик'); //-1, т.е. меньше
+```
 
 Объекты и массивы сравниваются не по содержимому, а на равенство указателей!
+```JavaScript
+var a = {};
+a  == {};	// false
+a === {};	// false
+a  == a;	// true
+a === a;	// true
+```
 
-    var a = {};
-    a  == {};	// false
-    a === {};	// false
-    a  == a;	// true
-    a === a;	// true
-
-Но если определены _valueOf_ или _toString_, то нестрого сравнить можно:
-
-    var num = {
-        val: 5,
-        valueOf: function() {return this.val;}
-    }
-    5 == num; //true
-    5 === num; //false
+Но если определены `valueOf` или `toString`, то нестрого сравнить можно:
+```JavaScript
+var num = {
+    val: 5,
+    valueOf: function() {return this.val;}
+}
+5 == num; //true
+5 === num; //false
 
 
-    var str = {
-        val: 'abc',
-        toString: function() {return this.val;}
-    }
-    'abc' == str; //true
-    'abc' === str;//false
+var str = {
+    val: 'abc',
+    toString: function() {return this.val;}
+}
+'abc' == str; //true
+'abc' === str;//false
 
-    new Number(5)  == 5;// true
-    new Number(5) === 5;// false
+new Number(5)  == 5;// true
+new Number(5) === 5;// false
 
-    (function(){
-        this  == 5;	// true
-        this === 5;	// false
-    }).call(5);
+(function(){
+    this  == 5;	// true
+    this === 5;	// false
+}).call(5);
+```
+
 ####Побитовые операторы
-**~, &, |, ^, >>, >>>, <<**.
+`&`, `|`, `^`, `>>`, `>>>`, `<<`, `~`
 
 Все они работают с 32-разрядными signed int.
-**>>>** - побитовый сдвиг вправо (дополняя слева нулями).  
-**^** используется для округления числа до целого:
-
-    12.345 ^ 0; // 12
-
-С помощью **~** делается проверка на -1:
-
-    (~num) //true if num != -1
+`>>>` - побитовый сдвиг вправо (дополняя слева нулями).  
+`^` используется для округления числа до целого:
+```JavaScript
+12.345 ^ 0; // 12
+```
+С помощью `~` делается проверка на -1:
+```JavaScript
+(~num) //true if num != -1
+```
 
 ####Логические операторы
-**&&, ||, !**
+`&&`, `||`, `!`
 
-**&&** возвращает первый ложный операнд (или последний если все истинны).  
-**||** возвращает первый истинный операнд (или последний если все ложны).  
-С помощью **!** можно привести значение к _Boolean_:
-
-    !!123; //true
-
+`&&` возвращает первый ложный операнд (или последний если все истинны).  
+`||` возвращает первый истинный операнд (или последний если все ложны).  
+С помощью `!` можно привести значение к _Boolean_:
+```JavaScript
+!!123; //true
+```
 **Приведение к _Boolean_**:  
-_0, '', null, undefined, NaN_ => false;  
-_[], {}_ и все остальное => true
+`0`, `''`, `null`, `undefined`, `NaN` => false;  
+`[]`, `{}` и все остальное => true
 
 Выражение в _if, while, for_ приводится к _Boolean_.
 
 ####switch case
-В _case_ сравнивает строго, т.е. через _===_
+В _case_ сравнивает строго, т.е. через `===`
 
 ####typeof
 `typeof(arg)` или `typeof arg`
-
-    typeof(null); //object - это ошибка в языке
-	typeof []; //object
-	typeof {}; //object
-
+```JavaScript
+typeof(null); //object - это ошибка в языке
+typeof []; //object
+typeof {}; //object
+```
 
 ####eval
-Без _"use strict"_ запускает код в текущей области видимости,  
-с _"use strict"_ - создается своя область видимости (внешние ккции и
+Без `"use strict"` запускает код в текущей области видимости,  
+с `"use strict"` - создается своя область видимости (внешние функции и
 переменные читать/писать можно, внутри объявленные внутри и останутся).
 
 ####Boolean
 Не надо создавать _Boolean_ как объект!
-
-    var b1 = true;
-    if(b1)
-        ok(); //тут все нормально
-    var b2 = new Boolean(false)
-    if(b2)
-        ok(); //тут сработает, хотя мы инициализировали false. Потому что это объект.
-
+```JavaScript
+var b1 = true;
+if(b1)
+    ok(); //тут все нормально
+var b2 = new Boolean(false)
+if(b2)
+    ok(); //тут сработает, хотя мы инициализировали false. Потому что это объект.
+```
 
 ####Number
-Особые значения: _**NaN**_ и _**Infinity**_.
+Особые значения: `NaN` и `Infinity`.
+```JavaScript
+Что_угодно <арифм. оператор> NaN; //NaN
+```
 
-    Что_угодно <арифм. оператор> NaN; //NaN
 Проверка на _NaN_ и _Infinity_:
+```JavaScript
+isNaN(arg); //arg приводится к числу
+isFinite(arg); //вернет true если arg != NaN или +-Infinity
+```
 
-    isNaN(arg); //arg приводится к числу
-    isFinite(arg); //вернет true если arg != NaN или +-Infinity
 _**String**_ to _**Number**_  
 `parseInt(str)`, `parseFloat(str)` будут парсить строку с первого символа,
 первый "неправильный" символ и все что за ним отбрасываются.  
 Нестроковые аргументы приводятся к строке.
-
-    parseInt(''); //NaN
-    parseInt('px12'); //NaN
-    parseInt('12px'); //12
-    parseFloat('12.3.4.54'); //12.3
+```JavaScript
+parseInt(''); //NaN
+parseInt('px12'); //NaN
+parseInt('12px'); //12
+parseFloat('12.3.4.54'); //12.3
+```
 
 **Округление**:
-
-    arg.toFixed(n); //округлить arg до n знаков после запятой, n >= 0
-    //можно и с числовыми литералами (но не забываем что у них есть своя точка)
-    12.toFixed(2); //ошибка!
-    12.0.toFixed(2); //12.00
+```JavaScript
+arg.toFixed(n); //округлить arg до n знаков после запятой, n >= 0
+//можно и с числовыми литералами (но не забываем что у них есть своя точка)
+12.toFixed(2); //ошибка!
+12.0.toFixed(2); //12.00
+```
 
 Очень аккуратно работаем с флоатами:
-
-    .1 + .2; //0.30000000000000004
+```JavaScript
+.1 + .2; //0.30000000000000004
+```
 
 _Хитрый пример:_
-
-    alert( 9999999999999999 ); // выведет 10000000000000000
+```JavaScript
+alert( 9999999999999999 ); // выведет 10000000000000000
+```
 
 ####String
 Символ на _n_-й позиции:
-
-    strVar.charAt(n);
-    strVar[n];
-
+```JavaScript
+strVar.charAt(n);
+strVar[n];
+```
+```JavaScript
     "".charAt(0); //пустая строка
     ""[0]; //undefined
+```
 
-Многострочная строка: каждая линия оканчивается на \
-
-    var ssstring = "lalala \
-                    bebebe";
+Многострочная строка: каждая линия оканчивается на `\`
+```JavaScript
+var ssstring = "lalala \
+                bebebe";
+```
 
 Подстрока:  
 `substring(start, end)`  
@@ -196,25 +213,29 @@ _start_ - как в _substring_.
 
 ###Функции
 **Function declaration**
-
-    function foo() { return 5; }
+```JavaScript
+function foo() { return 5; }
+```
 Такая функция будет объявлена до выполнения кода.
 
 **Anonymous function expression**
-
-    var foo = function() { return 5; }
+```JavaScript
+var foo = function() { return 5; }
+```
 А такая - только когда до неё дойдет (на самом деле до выполнения кода
 будет объявлена _var foo = undefined_).
 
 **Named function expression**
-
-    var foo = function bar() { return 5; }
+```JavaScript
+var foo = function bar() { return 5; }
+```
 Из внешнего кода мы не сможем вызвать _bar()_, зато использовать изнутри
 для рекурсивных вызовов.
 
 **Как не надо объявлять** (еще один способ объявления)
-
-    var sum = new Function('a,b', ' return a+b; ');
+```JavaScript
+var sum = new Function('a,b', ' return a+b; ');
+```
 Первый параметр - аргументы, второй - тело.
 
 
@@ -233,38 +254,42 @@ _f(options)_, где _options = {arg1: 1, arg3: 4}_.
 
 #####Декораторы:
 https://learn.javascript.ru/decorators
-
-    function decorate(f) {
-        //some code...
-        return function() {
-            return f.apply(this, arguments);
-        }
+```JavaScript
+function decorate(f) {
+    //some code...
+    return function() {
+        return f.apply(this, arguments);
     }
-    function Func() {};
-    Func = decorate(Func);
+}
+function Func() {};
+Func = decorate(Func);
+```
 Примеры использования: Проверка типов входных данных, проверка прав и т.д.
 
 #####bind:
-Позволяет привязать контекст (_this_) к функции, возвращает функцию:
+Позволяет привязать контекст (`this`) к функции, возвращает функцию:
 `var wrapper = func.bind(context[, arg1, arg2...])` - _arg1_, _arg2_...
 будут добавлены _перед_ явно переданными аргументами
-
-    function f() {
-        console.log(this);
-    }
-    var g = f.bind("Context");
-    f() //выведется 'Context'
+```JavaScript
+function f() {
+    console.log(this);
+}
+var g = f.bind("Context");
+f() //выведется 'Context'
+```
 
 В следующем примере мы сохраним _user_ как _this_, и его состояние на момент _setTimeout_:
-
-    setTimeout(user.sayHi.bind(user), 1000);
+```JavaScript
+setTimeout(user.sayHi.bind(user), 1000);
+```
 
 **Частичное применение**  
 Функция, которая вызывает другую функцию с какими-то дефолтными аргументами
-
-    function mul(a,b) {return a*b;}; //перемножает два аргумента
-    var double = mul.bind(null, 2); //контекст = null, первый аргумент = 2
-    double(3); //вернет 6
+```JavaScript
+function mul(a,b) {return a*b;}; //перемножает два аргумента
+var double = mul.bind(null, 2); //контекст = null, первый аргумент = 2
+double(3); //вернет 6
+```
 
 **Каррирование**  
 Функция, которая возвращает функцию. Строго говоря, возвращенная функция принимает только один аргумент, становятся возможны вызовы func(1)(2)(3)...  
@@ -273,15 +298,17 @@ https://learn.javascript.ru/decorators
 
 _Форвардинг вызова_ - вызываем функцию через к-л декоратор
 чтобы изнутри все выглядело будто нет никакого декоратора.
-
-    var result = f.apply(this, arguments);
+```JavaScript
+var result = f.apply(this, arguments);
+```
 
 #####call:  
 `func.call(object, arg1, arg2)` = _func(arg1, arg2)_ с явно указанным _this = object_.  
-Возвращает результат вызова функции
-
-    var join = [].join; // скопируем ссылку на функцию в переменную
-    var argStr = join.call(arguments, ':'); //и вызовем ее для arguments
+Возвращает результат вызова функции.
+```JavaScript
+var join = [].join; // скопируем ссылку на функцию в переменную
+var argStr = join.call(arguments, ':'); //и вызовем ее для arguments
+```
 
 #####apply:  
 `func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`.  
@@ -289,22 +316,25 @@ _Форвардинг вызова_ - вызываем функцию через
 
 ###Области видимости
 Задачка с циклом:
-
-	for (var i = 0; i < 10; i++) {
-	    var shooter = function(cur) {
-	    	return function() { // функция-стрелок
-	      		alert( cur ); // выводит свой номер
-	    	};
-	    } (i);
-	    shooters.push(shooter);
-	}
+```JavaScript
+for (var i = 0; i < 10; i++) {
+    var shooter = function(cur) {
+    	return function() { // функция-стрелок
+      		alert( cur ); // выводит свой номер
+    	};
+    } (i);
+    shooters.push(shooter);
+}
+```
 
 ###Массивы
+```JavaScript
+var arr1 = [10]; //Массив из одного элемента равного 10
+var arr2 = new Array(10); //Массив из 10 элементов равных undefined
+```
 
-    var arr1 = [10]; //Массив из одного элемента равного 10
-    var arr2 = new Array(10); //Массив из 10 элементов равных undefined
 `pop()` - возвращает длину до попа.  
-`shift()` - работает как pop_front  
+`shift()` - работает как pop_front.  
 `push()` - возвращает полученную длину, может принимать несколько аргументов.  
 `unshift()` - работает как push_front, возвращает полученную длину, может принимать несколько аргументов.
 
@@ -314,87 +344,97 @@ _Форвардинг вызова_ - вызываем функцию через
 от оператора присваивания (только вот нахуя?).
 
 `string.split(symbol, num)`
-
-    "a,b,c,d".split(',', 2); // 'a', 'b'
-    "abcd".split(''); // 'a', 'b', 'c', 'd'
+```JavaScript
+"a,b,c,d".split(',', 2); // 'a', 'b'
+"abcd".split(''); // 'a', 'b', 'c', 'd'
+```
 
 `join(sym)`
-
-    [1, 2, 3].join('+'); // '1+2+3'
-    new Array(4).join("ля"); // ляляляля
+```JavaScript
+[1, 2, 3].join('+'); // '1+2+3'
+new Array(4).join("ля"); // ляляляля
+```
 
 `splice( start, deleteCount, [elem1[, elem2[, ...[, elemN]]]] )`
-начиная с позиции _start_ удалить _deleteCount_ элементов, и туда же
-вставить элементы _elem1, elem2..._  
-_start_ может быть и отрицательным - тогда отсчет начнется с конца.  
+начиная с позиции `start` удалить `deleteCount` элементов, и туда же
+вставить элементы `elem1, elem2...`  
+`start` может быть и отрицательным - тогда отсчет начнется с конца.  
 Вовращает массив из удаленных элементов.
 
-`slice(begin, end)` возвращает участок массива от begin до end, не включая end.
+`slice(begin, end)` возвращает участок массива от `begin` до `end`, не включая `end`.
 Исходный массив при этом не меняется. Отрицательные аргументы можно.
 
 `sort(function(a, b) {})` если функция не указана, то все элементы приводит
 к строке и сравнивает в лексикографическом порядке.
-
-	sort(function(a, b) {
-		//Она должна возвращать:
-		//Положительное значение, если a > b,
-		//Отрицательное значение, если a < b,
-		//Если равны — можно 0, но вообще — не важно
-	})
+```JavaScript
+sort(function(a, b) {
+	//Она должна возвращать:
+	//Положительное значение, если a > b,
+	//Отрицательное значение, если a < b,
+	//Если равны — можно 0, но вообще — не важно
+})
+```
 
 `reverse()`
 
-`concat(param1, param2 ...)` _param_ может быть массивом,
+`concat(param1, param2 ...)`: `param` может быть массивом,
 тогда добавится не массив, а элементы из массива
-
-    var arr = [1, 2];
-    var newArr = arr.concat([3, 4], 5); //[1, 2, 3, 4, 5]
+```JavaScript
+var arr = [1, 2];
+var newArr = arr.concat([3, 4], 5); //[1, 2, 3, 4, 5]
+```
 
 `indexOf(searchElement[, fromIndex])`,
-`lastIndexOf(searchElement[, fromIndex])` - используется строгое сравнение **===**
+`lastIndexOf(searchElement[, fromIndex])` - используется строгое сравнение `===`
 
-`Array.isArray(arr)` массив ли это?
+`Array.isArray(arr)` проверяет, а не массив ли это?
 
 ###Объекты
 Всегда и везде передаются по ссылке!
 
-В следующем коде будут два разных объекта. Например в первом есть метод toString():
+В следующем коде будут два разных объекта. Например в первом есть метод `toString()`:
+```JavaScript
+var obj = {};
+var obj = Object.create(null);
+```
 
-    var obj = {};
-    var obj = Object.create(null);
+Проверка на существование поля, удаление поля:
+```JavaScript
+if('member' in person) func();//проверка на существование поля
+delete obj.member;
+obj.member; //undefined
+```
 
-
-    if('member' in person) func();//проверка на существование поля
-    delete obj.member;
-    obj.member; //undefined
 Обход полей объекта: `for(key in obj)` при таком обходе сначала идут отсортированные числа, потом -
-строки в порядке объявления. Если мы не хотим сортировать строки вида '12'
-(числа) - то пишем их как '+12' - тогда они и сортироваться не будут, и прекрасно приводятся к числу.
+строки в порядке объявления. Если мы не хотим сортировать строки вида `'12'`
+(числа) - то пишем их как `'+12'` - тогда они и сортироваться не будут, и прекрасно приводятся к числу.
 
 **Приведение к строке и числу** реализуется переопределением методов
 `valueOf()` и `toString()`. Они необязательно должны возвращать именно
 _Number_ и _String_, любой примитив. Он потом будет приведен дополнительно.
 
 **Геттеры и сеттеры**
-
-    var user = {
-      firstName: "Вася",
-      surname: "Петров",
-      get fullName() {
-        return this.firstName + ' ' + this.surname;
-      },
-      set fullName(value) {
-        var split = value.split(' ');
-        this.firstName = split[0];
-        this.surname = split[1];
-      }
-    };
-    user.fullName //вернет "Вася Петров"
-    user.fullName = "Petya Ivanov" //все сработает
+```JavaScript
+var user = {
+  firstName: "Вася",
+  surname: "Петров",
+  get fullName() {
+    return this.firstName + ' ' + this.surname;
+  },
+  set fullName(value) {
+    var split = value.split(' ');
+    this.firstName = split[0];
+    this.surname = split[1];
+  }
+};
+user.fullName //вернет "Вася Петров"
+user.fullName = "Petya Ivanov" //все сработает
+```
 
 **Свойства объекта** (работает аналогично Q_PROPERTY)
-
-    Object.defineProperty(obj, prop, descriptor)
+```JavaScript
+Object.defineProperty(obj, prop, descriptor)
+```
 Дескриптор — объект, который описывает поведение свойства.
 В нём могут быть следующие поля:  
  * `value` — значение свойства, по умолчанию undefined.  
@@ -402,47 +442,47 @@ _Number_ и _String_, любой примитив. Он потом будет п
  * `configurable` — если true, то свойство можно удалять, а также менять его в дальнейшем при помощи новых вызовов defineProperty. По умолчанию false.  
  * `enumerable` — если true, то свойство будет участвовать в переборе for..in. По умолчанию false.  
  * `get` — функция, которая возвращает значение свойства. По умолчанию undefined. Вызывается как переменная-член без скобок справа от присваивания  
- * `set` — функция, которая записывает значение свойства. По умолчанию undefined. Вызывается как переменная-член без скобок слева от присваивания  
-Запрещено одновременно указывать значение _value_ и функции _get/set_. Либо значение, либо функции для его чтения-записи, одно из двух.  
-Также запрещено и не имеет смысла указывать _writable_ при наличии _get/set_-функций  
+ * `set` — функция, которая записывает значение свойства. По умолчанию undefined. Вызывается как переменная-член без скобок слева от присваивания.  
+
+Запрещено одновременно указывать значение `value` и функции `get`/`set`. Либо значение, либо функции для его чтения-записи, одно из двух.  
+Также запрещено и не имеет смысла указывать `writable` при наличии `get`/`set`-функций  
 
 **Статические члены**  
-Имеем класс _Animal_.
+Имеем класс _Animal_. В нем можно делать статические члены:
+```JavaScript
+Animal.count = 0; //вот статическое свойство класса
+Animal.setCount = function(n) {
+    this.count = n;
+} //доступ из статических методов к статическим полям через this.
+```
 
-    Animal.count = 0; //вот статическое свойство класса
-    Animal.setCount = function(n) {
-        this.count = n;
-    } //доступ из статических методов к статическим полям через this.
-
-**Методы объекта**
-
-    Object.defineProperties(obj, descriptors); //descriptors - это {} пар prop-descriptor
-	Object.keys(obj);
-	Object.getOwnPropertyNames(obj); //вернет вообще все, даже не-enumerable
-	Object.getOwnPropertyDescriptor(obj, prop);
-	Object.preventExtensions(obj); //после этого новые свойства больше не добавить
-    Object.isExtensible(obj);
-	Object.seal(obj); //после этого свойства больше не добавить, не удалить, все становятся не-configurable
-    Object.isSealed(obj);
-	Object.freeze(obj); //как прошлый + запрет изменения, все свойства становятся не-writable
-	Object.isFrozen(obj);
+**Методы объекта**  
+ * `Object.defineProperties(obj, descriptors)`, `descriptors` - это {} пар prop-descriptor.
+ * `Object.keys(obj)` - массив _enumerable_ свойств.
+ * `Object.getOwnPropertyNames(obj)` - вернет вообще все свойства, даже не-_enumerable_
+ * `Object.getOwnPropertyDescriptor(obj, prop)`
+ * `Object.preventExtensions(obj)` - после этого новые свойства больше не добавить
+ * `Object.isExtensible(obj)`
+ * `Object.seal(obj)` - после этого свойства больше не добавить, не удалить, все становятся не-_configurable_
+ * `Object.isSealed(obj)`
+ * `Object.freeze(obj)` - как прошлый + запрет изменения, все свойства становятся не-_writable_
+ * `Object.isFrozen(obj)`
 
 **_this_ в методах объекта**  
 Вызов `obj.method()` (объект-точка-метод-скобки)  
 или `obj[method]()` (объект-метод в квадратных скобках-скобки)  
 порождает значение специального типа _Reference Type_ (base-name-strict):  
- - _base_ — как раз объект,
- - _name_ — имя свойства,
- - _strict_ — вспомогательный флаг для передачи use strict.
+ * _base_ — как раз объект,
+ * _name_ — имя свойства,
+ * _strict_ — вспомогательный флаг для передачи use strict.  
 Без скобок (`obj.method`) просто получаем name и используем, без привязки к base
-
-        user.hi(); // this - это user
-        (user.name == "Вася" ? user.hi : user.bye)(); // this - это хз что
-
+```JavaScript
+user.hi(); // this - это user
+(user.name == "Вася" ? user.hi : user.bye)(); // this - это хз что
+```
 **[[Class]]**  
 Если написать:
-
-    {}.toString.call(date) // [object Date] - здесь Date - это значение секретного свойства [[Class]]
+`{}.toString.call(date)` - выведет `[object Date]` - здесь _Date_ - это значение секретного свойства `[[Class]]`
 Можно выдрать это свойство через {}.toString.call(obj).slice(8, -1).
 Работает только для встроенных типов.
 
