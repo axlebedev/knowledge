@@ -488,77 +488,81 @@ user.hi(); // this - это user
 
 ###Наследование
 #####Функциональный паттерн
-
-    function Machine(power) {}
-    function CoffeeMachine(power) {
-        Machine.apply(this, arguments);
-    }
-Если делать таким макаром, то приватные поля Machine будут
-не видны в CoffeeMachine. Как недорешение: условиться протектед-члены делать
-как публичные, но чтобы имя начиналось с \_.
+```JavaScript
+function Machine(power) {}
+function CoffeeMachine(power) {
+    Machine.apply(this, arguments);
+}
+```
+Если делать таким макаром, то приватные поля _Machine_ будут
+не видны в _CoffeeMachine_. Как недорешение: условиться протектед-члены делать
+публичными, но чтобы имя начиналось с \_.
 
 **Переопределение методов**:
-
-    var parentMethod = this.method;
-    this.method = function() {
-        parentMethod.call(this); //здесь если method родителя не забинден на this -
-                                 //то все сломается к пизде. Для этого юзаем call
-        //свой код
-    }
+```JavaScript
+var parentMethod = this.method;
+this.method = function() {
+    parentMethod.call(this); //здесь если method родителя не забинден на this -
+                             //то все сломается к пизде. Для этого юзаем call
+    //свой код
+}
+```
 Соответственно, если родительский метод вообще не используется в потомке -
 то просто переопределяем.
 
 #####Прототипный паттерн
 **__proto__** (когда объявляем объекты без new)
-
-    var animal = {};
-    var rabbit = {};
-    rabbit.\_\_proto\_\_ = animal;
-при переборе полей через _for in_ будут перебираться все -
+```JavaScript
+var animal = {};
+var rabbit = {};
+rabbit.__proto__ = animal;
+```
+При переборе полей через _for in_ будут перебираться все -
  и собственные, и прототипные.  
- Проверка на то что свойство принадлежит именно этому классу (а не родителю) - `hasOwnProperty()`.
+`hasOwnProperty()` - Проверка на то что свойство принадлежит именно этому классу (а не родителю).
 
 Готовый пример **Extend**:
-
-    function extend(Child, Parent) {
-        var F = function() { };
-        F.prototype = Parent.prototype;
-        Child.prototype = new F();
-        Child.prototype.constructor = Child;
-        Child.superclass = Parent.prototype; //это если мы потом захотим обратиться к методам родителя
-    }
-
+```JavaScript
+function extend(Child, Parent) {
+    var F = function() { };
+    F.prototype = Parent.prototype;
+    Child.prototype = new F();
+    Child.prototype.constructor = Child;
+    Child.superclass = Parent.prototype; //это если мы потом захотим обратиться к методам родителя
+}
+```
 
 #####Паразитический паттерн  
 Для такого наследования не будет работать _instanceof_!  
 Суть: имеем фабрику _Animal_, объявляем другую фабрику _Rabbit_, который внутри себя вызовет _Animal_ и будет потом издеваться над полученным объектом.
-
-    function Animal() {
-        var private = 10
-        return {
-            public: 'public',
-            getter: function() {
-                return private;
-            }
+```JavaScript
+function Animal() {
+    var private = 10
+    return {
+        public: 'public',
+        getter: function() {
+            return private;
         }
     }
+}
 
-    function Rabbit() {
-        var me = Animal();
-        var anotherPrivate = 0;
-        me.publicMethod = function() {};
-        me.constructor = arguments.callee; //Не пропустить эту строчку
-        return me;
-    }
+function Rabbit() {
+    var me = Animal();
+    var anotherPrivate = 0;
+    me.publicMethod = function() {};
+    me.constructor = arguments.callee; //Не пропустить эту строчку
+    return me;
+}
+```
 
 #####Через анонимную функцию  
 Вызов `new method` эквивалентен вызову `new method()` - пустые скобки подставятся сами.
-
-    var a = new function() {
-	  	this.b = 2;
-	} //работает как конструктор
-	a.b; //2
-
+```JavaScript
+var a = new function() {
+  	this.b = 2;
+} //работает как конструктор
+a.b; //2
+```
 Помимо простого обращения `obj.__proto__` есть методы:
  * `Object.getPrototypeOf(obj)`
  * `Object.setPrototypeOf(obj, proto)`
@@ -567,50 +571,58 @@ user.hi(); // this - это user
 Множественного наследования таким образом нет, реализовывать через цепочку наследования
 
 **prototype** (когда объекты объявляются через _new_)
-
-    var animal = {};
-	function Rabbit(name) {}
-	Rabbit.prototype = animal;//так не совсем правильно, см. ниже
-	var rabbit = new Rabbit();
+```JavaScript
+var animal = {};
+function Rabbit(name) {}
+Rabbit.prototype = animal;//так не совсем правильно, см. ниже
+var rabbit = new Rabbit();
+```
 
 У любого _prototype_ есть конструктор, этим можно пользоваться:
+```JavaScript
+var rabbit = new Rabbit();
+var rabbit2 = new rabbit.constructor();
+```
 
-	var rabbit = new Rabbit();
-	var rabbit2 = new rabbit.constructor();
 Этот конструктор легко потерять:
-
-	Rabbit.prototype = { jumps: true } //всё, конструктора больше нет
-    //Но вообще так лучше не делать
+```JavaScript
+Rabbit.prototype = { jumps: true } //всё, конструктора больше нет
+//Но вообще так лучше не делать
+```
 
 А вообще классы объявляем как в видосе с **udacity**:
-
-	Rabbit.prototype = Object.create(Animal.prototype);
-	//это пишем ДО объявления остальных методов в прототипе, а то они затрутся
-	Rabbit.prototype.constructor = Rabbit;
-	//это если мы собираемся потом использовать конструктор из прототипа
+```JavaScript
+Rabbit.prototype = Object.create(Animal.prototype);
+//это пишем ДО объявления остальных методов в прототипе, а то они затрутся
+Rabbit.prototype.constructor = Rabbit;
+//это если мы собираемся потом использовать конструктор из прототипа
+```
 
 Вызов родительского конструктора из дочернего:
-
-	function Rabbit(name) {
-	  Animal.apply(this, arguments);
-	}
+```JavaScript
+function Rabbit(name) {
+  Animal.apply(this, arguments);
+}
+```
 
 Вызов родительских методов из дочерних примерно так же:
-
-	Rabbit.prototype.run = function() {
-	   Animal.prototype.run.apply(this, arguments);
-	   this.jump();
-	}
+```JavaScript
+Rabbit.prototype.run = function() {
+   Animal.prototype.run.apply(this, arguments);
+   this.jump();
+}
+```
 
 **Проверка типа с учетом цепочки наследования**: `instanceof`
-
-    rabbit instanceof Rabbit; //true
-    rabbit instanceof Animal; //true
+```JavaScript
+rabbit instanceof Rabbit; //true
+rabbit instanceof Animal; //true
+```
 
 ####Date, Time
 `new Date()` - вернет текущее время.  
-`Date(msecs)` - c 01.01.1970 GMT+0  
-`Date(datestring)`  
+`Date(msecs)` - c 01.01.1970 GMT+0.  
+`Date(datestring)` - конструируем из строки.  
 `Date(year, month, date=1, hours=0, minutes=0, seconds=0, ms=0)` -
 _year_ - 4 цифры, _month_ = от 0 до 11
 `getFullYear()`, `getMonth()`, `getDate()`, `getHours()`, `getMinutes()`, `getSeconds()`, `getMilliseconds()`, `getDay()` - номер дня в неделе от 0 до 6.  
@@ -618,13 +630,13 @@ _year_ - 4 цифры, _month_ = от 0 до 11
 `toLocaleString(локаль, опции)`  
 `toString()`, `toDateString()`, `toTimeString()`  
 `parse(str)`  
-`now()`  аналогичен вызову _+new Date()_, но в отличие от него
+`now()`  аналогичен вызову `+new Date()`, но в отличие от него
 не создаёт промежуточный объект даты, а поэтому — во много раз быстрее.  
-При бинарном **+** используется _toString_, а не _valueOf_
+При бинарном `+` используется `toString`, а не `valueOf`.
 
 ####JSON
 Прокатывают только двойные кавычки.  
-`JSON.parse(str, reviver)`, где _reviver_ -
+`JSON.parse(str, reviver)`, где `reviver` -
 это `функция(key, value) -> value` которая может пропарсить значение
 каким-то особым образом. Необязательный аргумент.
 
@@ -633,12 +645,13 @@ _year_ - 4 цифры, _month_ = от 0 до 11
 `replacer` - массив тех свойств, которые будут добавлены
 либо функция `replacer(key, value) -> value`  
 `space` - количество пробелов в отступе (влияет только на красоту).
-
-		JSON.stringify(user, function(key, value) {
-		  if (key == 'window') return undefined;
-		  return value;
-		});
-		JSON.stringify(user, ["name", "age"])
+```JavaScript
+JSON.stringify(user, function(key, value) {
+  if (key == 'window') return undefined;
+  return value;
+});
+JSON.stringify(user, ["name", "age"])
+```
 
 ###setTimeout
 `setTimeout(func / code, delay[, arg1, arg2...]) -> timerId`
@@ -647,7 +660,7 @@ _year_ - 4 цифры, _month_ = от 0 до 11
 
 Аналогично: `setInterval`/`clearInterval`. Тут учитывается время
  _между стартами функций_ кроме IE, который считает время между концом прошлой и стартом следующей
-Чтобы в остальных было как в IE - делаем рекурсивный _setTimeout_.
+Чтобы в остальных было как в IE - делаем рекурсивный `setTimeout`.
 
 Во время показа алертов в браузере этот таймер может заморозиться
 (opera/chrome/safari) а может и нет (IE/firefox)
@@ -657,33 +670,33 @@ _year_ - 4 цифры, _month_ = от 0 до 11
 
 В каждом браузере есть минимальное значение задержки,
 обычно это 4мс в новых и 15мс в старых.
-
-    setInterval(.., 0) //в IE не сработает, в остальных сработает с минимальной задержкой
-
+```JavaScript
+setInterval(.., 0) //в IE не сработает, в остальных сработает с минимальной задержкой
+```
 Если вкладка неактивна - таймер будет срабатывать реже (зависит от браузера).
 
-Можно использовать _setTimeout_ на долгих задачах чтобы иногда возвращать управление браузеру и чтобы он не подвисал.
+Можно использовать `setTimeout` на долгих задачах чтобы иногда возвращать управление браузеру и чтобы он не подвисал.
 
 ###try-catch-finally
 Синтаксис как в плюсах:
-
-	try {}
-	catch(err) {}
-	finally {}
-_err_ - это объект
-У _err_ есть свойства name, message, stack (есть еще, зависит от браузера)
+```JavaScript
+try {}
+catch(err) {}
+finally {}
+```
+`err` - это объект, у него есть свойства `name`, `message`, `stack` (может быть еще, зависит от браузера)
 
 Из асинхронно запущенных методов, естественно, ничего не поймает.
-_finally_ выполняется всегда: если в _try_/_catch_ есть _return_, то _finally_ выполнится перед ним.
+`finally` выполняется всегда: если в `try`/`catch` есть `return`, то `finally` выполнится перед ним.
 
 Если что, выкидываем `throw err`, _err_ объект как описано выше, но в принципе может быть и
 просто число или строка.  
 В JavaScript встроен ряд конструкторов для стандартных ошибок:
-_SyntaxError, ReferenceError, RangeError_ и некоторые другие.
+`SyntaxError`, `ReferenceError`, `RangeError` и некоторые другие.
 
 **"Проброс ошибки"**:
-если мы в catch-блоке не знаем как обработать ошибку - то можем выкинуть ее дальше через throw
-тогда она либо уйдет в catch внешнего кода, либо повалит скрипт.  
+если мы в `catch`-блоке не знаем как обработать ошибку - то можем выкинуть ее дальше через `throw`
+тогда она либо уйдет в `catch` внешнего кода, либо повалит скрипт.  
 **"Оборачивание исключения"**:
 Мы пробрасываем ошибку, обрабатываемую во внешнем коде, но в нее запихиваем исходную ошибку
 чтобы внешний код имел о ней представление
@@ -703,103 +716,118 @@ https://learn.javascript.ru/testing
 
 2. Вызов функций  
 как в питоне:
-
-	let [firstName, lastName] = ["Илья", "Кантор"];
-	firstName; //"Илья"
+```JavaScript
+let [firstName, lastName] = ["Илья", "Кантор"];
+firstName; //"Илья"
+```
 
 3. Оператор многоточия  
 `...` - оператор многоточия.
 
 4. Присваивание сразу нескольких переменных  
-  * Через _let_, дальше как в питоне:
+  * Через `let`, дальше как в питоне:
+```JavaScript
+var arr[1,2];
+let [a, b] = arr; //a = 1, b = 2
+```
 
-    var arr[1,2];
-    let [a, b] = arr; //a = 1, b = 2
-  * Остаток массива выдергиваем через многоточие:
-
-	let [firstName, lastName, ...rest] = "Юлий Цезарь Император Рима".split(" ");
-	rest; // ["Император", "Рима"]
+  * Остаток массива выдергиваем через `...`:
+```JavaScript
+let [firstName, lastName, ...rest] = "Юлий Цезарь Император Рима".split(" ");
+rest; // ["Император", "Рима"]
+```
 
   * Можно ставить дефолтные значения:
-	let [firstName="Гость", lastName="Анонимный"] = [];
+```JavaScript
+let [firstName="Гость", lastName="Анонимный"] = [];
+```
 
   * С объектами такое тоже прокатит:
-
-	let options = {
-        title: "Меню",
-        width: 100,
-        height: 200
-	};
-	let {title, width, height} = options;
-	title; //"Меню"
-	let {width: w, height: h, title} = options;
-	w; //100
-	let {width: w, height: h, title, somevar = 100500} = options;
-	somevar; //100500
+```JavaScript
+let options = {
+    title: "Меню",
+    width: 100,
+    height: 200
+};
+let {title, width, height} = options;
+title; //"Меню"
+let {width: w, height: h, title} = options;
+w; //100
+let {width: w, height: h, title, somevar = 100500} = options;
+somevar; //100500
+```
 
     Нюанс:
-
+```JavaScript
 	let a, b;
     	{a, b} = {a:5, b:6};//Выражение внутри {} будет воспринято как блок кода
       	({a, b} = {a:5, b:6});//а тут норм
+```
 
   * Можно вкладывать конструкции друг в друга:
-
-            let options = {
-                size: {
-                    width: 100,
-                    height: 200
-                },
-                items: ["Пончик", "Пирожное"]
-            }
-            let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
-            alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
+```JavaScript
+let options = {
+    size: {
+        width: 100,
+        height: 200
+    },
+    items: ["Пончик", "Пирожное"]
+}
+let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
+alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
+```
 
 5. Генерирование объектов  
 Можно при вызове функций генерить объект на ходу:
-
-            function showMenu({title, width, height}) {};
+```JavaScript
+function showMenu({title, width, height}) {};
+```
 
 6. Аргументы по умолчанию  
 В функции можно объявлять параметры по умолчанию (синтаксис как в плюсах).
-Тогда все, что _undefined_ будет заменяться дефолтным значением.
-_null_ и _NaN_ заменяться не будут.
+Тогда все, что `undefined` будет заменяться дефолтным значением.
+`null` и `NaN` заменяться не будут.
 
 7. Функции с переменным числом аргументов  
-  Чтобы избавиться от _arguments_, можно объявить функцию с переменным числом аргументов:
-
-        function showName(firstName, lastName, ...rest)
-
-  ... можно использовать и при вызове функции:
-
-		let numbers = [2, 3, 15];
-		Math.max(...numbers); //все равно что Math.max.apply(Math, numbers);
+  Чтобы избавиться от `arguments`, можно объявить функцию с переменным числом аргументов:
+```JavaScript
+function showName(firstName, lastName, ...rest)
+```
+  `...` можно использовать и при вызове функции:
+```JavaScript
+let numbers = [2, 3, 15];
+Math.max(...numbers); //все равно что Math.max.apply(Math, numbers);
+```
 
 8. Function.name  
-У функций появилось поле _name_:
+У функций появилось поле `name`:
+```JavaScript
+function func() {};
+func.name; //"func"
+//или даже
+let func = function() {}; //тоже будет name = "func"
+```
 
-    	function func() {};
-    	func.name; //"func"
-        //или даже
-      	let func = function() {}; //тоже будет name = "func"
+9. У функций, объявленных черех _function declaration_ видимость теперь блочная.
 
-9. У функций, объявленных черех function declaration видимость теперь блочная.
-
-10. Объявление функции через **=>**  
-
-        let inc = x => x+1; //все равно что let inc = function(x) {return x+1;};
-        let sum = (a,b) => a + b;
-        let getTime = () => "";
-        let getTime = () => {f1(); f2(); return ""};
-В таких функциях нет своего _this_ (он берется из вызвавшего кода),
-еще нет своего _arguments_.
+10. Объявление функции через `=>`  
+```JavaScript
+let inc = x => x+1; //все равно что let inc = function(x) {return x+1;};
+let sum = (a,b) => a + b;
+let getTime = () => "";
+let getTime = () => {f1(); f2(); return ""};
+```
+В таких функциях нет своего `this` (он берется из вызвавшего кода),
+нет своего `arguments`.
 
 11. Новый строковый литерал  
 \` (обратная кавычка):
-
-        var newstring = `lalala`
+```JavaScript
+var newstring = `lalala`
+```
  - допустимо делать многострочную строку
- - вставлять выражения через _${varname}_ или даже _${arg1 + arg2}_ например.
-
-            var a = 1, b = 2;
-            var string = `${a} + ${b} = ${a+b}`;
+ - вставлять выражения через `${varname}` или даже `${arg1 + arg2}` например.
+```JavaScript
+var a = 1, b = 2;
+var string = `${a} + ${b} = ${a+b}`;
+```
