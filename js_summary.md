@@ -836,3 +836,4 @@ var string = `${a} + ${b} = ${a+b}`;
 ```
 
 [Foo](#foo)
+[Debug](#debug)
