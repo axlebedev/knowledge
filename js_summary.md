@@ -5,8 +5,8 @@
 ###Debug
 Отсчет времени по метке:
 ```JavaScript
-console.time('1') //начнет отсчет времени
-console.timeEnd('1') //закончит отсчет времени и выведет в консоль
+console.time('1'); //начнет отсчет времени
+console.timeEnd('1'); //закончит отсчет времени и выведет в консоль
 ```
 ###Типы данных
 ####Арифметические операторы
@@ -19,9 +19,9 @@ var arg = /*что угодно*/;
 +'123'; //123
 +'+38'; //38
 +'abc'; //NaN
-+undefined //NaN
++undefined; //NaN
 ```
-Бинарный `+` приводит к _Number_, если у обоих аргументов задан _valueOf_.  
+Бинарный `+` приводит к _Number_, если у обоих аргументов задан `valueOf`.  
 Если нет (объект, массив...) - то приводит все к _String_ и делает конкатенацию.
 
 Бинарные `-`, `*`, `/` приводят к _Number_.
@@ -29,7 +29,7 @@ var arg = /*что угодно*/;
 Унарные `++` и `--` приводят к _Number_.
 
 ####Сравнение
-`==` - сравнение с приведением типов.
+`==` - сравнение с приведением типов.  
 `===` - строгое сравнение.
 
 Если один из операндов - _Number_ или _Boolean_, то все приводится к числу,  
@@ -89,7 +89,7 @@ new Number(5) === 5;// false
 ####Побитовые операторы
 `&`, `|`, `^`, `>>`, `>>>`, `<<`, `~`
 
-Все они работают с 32-разрядными signed int.
+Все они работают с 32-разрядными _signed int_.  
 `>>>` - побитовый сдвиг вправо (дополняя слева нулями).  
 `^` используется для округления числа до целого:
 ```JavaScript
@@ -116,7 +116,7 @@ new Number(5) === 5;// false
 Выражение в _if, while, for_ приводится к _Boolean_.
 
 ####switch case
-В _case_ сравнивает строго, т.е. через `===`
+В _case_ сравнивает строго, т.е. через `===`.
 
 ####typeof
 `typeof(arg)` или `typeof arg`
@@ -156,7 +156,7 @@ isFinite(arg); //вернет true если arg != NaN или +-Infinity
 
 _**String**_ to _**Number**_  
 `parseInt(str)`, `parseFloat(str)` будут парсить строку с первого символа,
-первый "неправильный" символ и все что за ним отбрасываются.  
+первый "неправильный" символ и все что за ним отбрасываются.
 Нестроковые аргументы приводятся к строке.
 ```JavaScript
 parseInt(''); //NaN
@@ -190,17 +190,17 @@ strVar.charAt(n);
 strVar[n];
 ```
 ```JavaScript
-    "".charAt(0); //пустая строка
-    ""[0]; //undefined
+"".charAt(0); //пустая строка
+""[0]; //undefined
 ```
 
-Многострочная строка: каждая линия оканчивается на `\`
+Многострочная строка: каждая линия оканчивается на `\`.
 ```JavaScript
 var ssstring = "lalala \
                 bebebe";
 ```
 
-Подстрока:  
+**Подстрока**:  
 `substring(start, end)`  
 Если _start_ > _end_ то они меняются местами.  
 Если _start_ < 0 то _start_ = 0, аналогично с _end_.
@@ -240,7 +240,7 @@ var sum = new Function('a,b', ' return a+b; ');
 ```
 Первый параметр - аргументы, второй - тело.
 
-
+--------------
 
 Если функция ничего не возвращает, то вернется _undefined_.
 
@@ -248,8 +248,8 @@ _arguments_ лучше не изменять, потому что изменят
 именованные параметры от этого - хз, зависит от интерпретатора.
 _'use strict'_ решает проблему - при изменении _arguments_ именованные параметры не меняются.
 
-Как в питоне _f(arg1 = 1, arg3 = 4)_ нельзя, это обходится с помощью
-_f(options)_, где _options = {arg1: 1, arg3: 4}_.
+Как в питоне `f(arg1 = 1, arg3 = 4)` нельзя, это обходится с помощью
+`f(options)`, где `options = {arg1: 1, arg3: 4}`.
 
 //TODO: https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/
 
@@ -298,14 +298,14 @@ double(3); //вернет 6
 Не путать с _частичным применением_!
 
 
-_Форвардинг вызова_ - вызываем функцию через к-л декоратор
+**Форвардинг вызова** - вызываем функцию через к-л декоратор
 чтобы изнутри все выглядело будто нет никакого декоратора.
 ```JavaScript
 var result = f.apply(this, arguments);
 ```
 
 #####call:  
-`func.call(object, arg1, arg2)` = _func(arg1, arg2)_ с явно указанным _this = object_.  
+`func.call(object, arg1, arg2)` - все равно что `func(arg1, arg2)` с явно указанным `this = object`.  
 Возвращает результат вызова функции.
 ```JavaScript
 var join = [].join; // скопируем ссылку на функцию в переменную
@@ -313,8 +313,8 @@ var argStr = join.call(arguments, ':'); //и вызовем ее для argument
 ```
 
 #####apply:  
-`func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`.  
-Только передаются не отдельные аргументы, а массив аргументов.
+`func.apply(object, [arg1, arg2])` это все равно что `func.call(object, arg1, arg2)`:  
+передаются не отдельные аргументы, а массив аргументов.
 
 ###Области видимости
 Задачка с циклом:
@@ -345,19 +345,19 @@ var arr2 = new Array(10); //Массив из 10 элементов равных
 `arr.length` - номер наибольшего индекса + 1. Может быть слева
 от оператора присваивания (только вот нахуя?).
 
-`string.split(symbol, num)`
+`string.split(symbol, num)` - разбитие строки на массив строк, с указанным разделителем и количеством элементов (лишние отбросятся)
 ```JavaScript
 "a,b,c,d".split(',', 2); // 'a', 'b'
 "abcd".split(''); // 'a', 'b', 'c', 'd'
 ```
 
-`join(sym)`
+`join(sym)` - слияние массива в строку, с указанным разделителем.
 ```JavaScript
 [1, 2, 3].join('+'); // '1+2+3'
 new Array(4).join("ля"); // ляляляля
 ```
 
-`splice( start, deleteCount, [elem1[, elem2[, ...[, elemN]]]] )`
+`splice( start, deleteCount, [elem1[, elem2[, ...[, elemN]]]] )`:
 начиная с позиции `start` удалить `deleteCount` элементов, и туда же
 вставить элементы `elem1, elem2...`  
 `start` может быть и отрицательным - тогда отсчет начнется с конца.  
@@ -477,6 +477,7 @@ Animal.setCount = function(n) {
  * _base_ — как раз объект,
  * _name_ — имя свойства,
  * _strict_ — вспомогательный флаг для передачи use strict.  
+
 Без скобок (`obj.method`) просто получаем name и используем, без привязки к base
 ```JavaScript
 user.hi(); // this - это user
@@ -485,7 +486,7 @@ user.hi(); // this - это user
 **[[Class]]**  
 Если написать:
 `{}.toString.call(date)` - выведет `[object Date]` - здесь _Date_ - это значение секретного свойства `[[Class]]`
-Можно выдрать это свойство через {}.toString.call(obj).slice(8, -1).
+Можно выдрать это свойство через `{}.toString.call(obj).slice(8, -1)`.
 Работает только для встроенных типов.
 
 ###Наследование
@@ -565,6 +566,9 @@ var a = new function() {
 } //работает как конструктор
 a.b; //2
 ```
+
+-------------
+
 Помимо простого обращения `obj.__proto__` есть методы:
  * `Object.getPrototypeOf(obj)`
  * `Object.setPrototypeOf(obj, proto)`
@@ -622,18 +626,34 @@ rabbit instanceof Animal; //true
 ```
 
 ####Date, Time
-`new Date()` - вернет текущее время.  
-`Date(msecs)` - c 01.01.1970 GMT+0.  
-`Date(datestring)` - конструируем из строки.  
-`Date(year, month, date=1, hours=0, minutes=0, seconds=0, ms=0)` -
-_year_ - 4 цифры, _month_ = от 0 до 11
-`getFullYear()`, `getMonth()`, `getDate()`, `getHours()`, `getMinutes()`, `getSeconds()`, `getMilliseconds()`, `getDay()` - номер дня в неделе от 0 до 6.  
+Конструкторы:
+ * `new Date()` - вернет текущее время.  
+ * `Date(msecs)` - c 01.01.1970 GMT+0.  
+ * `Date(datestring)` - конструируем из строки.  
+ * `Date(year, month, date=1, hours=0, minutes=0, seconds=0, ms=0)` -
+    _year_ - 4 цифры, _month_ - от 0 до 11
+
+Геттеры-сеттеры:
+ * `getFullYear()`
+ * `getMonth()`
+ * `getDate()`
+ * `getHours()`
+ * `getMinutes()`
+ * `getSeconds()`
+ * `getMilliseconds()`
+ * `getDay()` - номер дня в неделе от 0 до 6.  
 Есть аналогичные сеттеры, есть аналогичные методы для UTC  
-`toLocaleString(локаль, опции)`  
-`toString()`, `toDateString()`, `toTimeString()`  
-`parse(str)`  
+
+Приведение к строке/от строки
+ * `toLocaleString(локаль, опции)`  
+ * `toString()`
+ * `toDateString()`
+ * `toTimeString()`  
+ * `parse(str)`
+
 `now()`  аналогичен вызову `+new Date()`, но в отличие от него
 не создаёт промежуточный объект даты, а поэтому — во много раз быстрее.  
+
 При бинарном `+` используется `toString`, а не `valueOf`.
 
 ####JSON
@@ -691,7 +711,7 @@ finally {}
 Из асинхронно запущенных методов, естественно, ничего не поймает.
 `finally` выполняется всегда: если в `try`/`catch` есть `return`, то `finally` выполнится перед ним.
 
-Если что, выкидываем `throw err`, _err_ объект как описано выше, но в принципе может быть и
+Если что, выкидываем `throw err`, _err_ - объект как описано выше, но в принципе может быть и
 просто число или строка.  
 В JavaScript встроен ряд конструкторов для стандартных ошибок:
 `SyntaxError`, `ReferenceError`, `RangeError` и некоторые другие.
@@ -718,10 +738,10 @@ https://learn.javascript.ru/testing
 
 2. Вызов функций  
 как в питоне:
-```JavaScript
-let [firstName, lastName] = ["Илья", "Кантор"];
-firstName; //"Илья"
-```
+    ```JavaScript
+    let [firstName, lastName] = ["Илья", "Кантор"];
+    firstName; //"Илья"
+    ```
 
 3. Оператор многоточия  
 `...` - оператор многоточия.
@@ -729,62 +749,62 @@ firstName; //"Илья"
 4. Присваивание сразу нескольких переменных  
 
   * Через `let`, дальше как в питоне:
-```JavaScript
-var arr[1,2];
-let [a, b] = arr; //a = 1, b = 2
-```
+    ```JavaScript
+    var arr[1,2];
+    let [a, b] = arr; //a = 1, b = 2
+    ```
 
   * Остаток массива выдергиваем через `...`:
-```JavaScript
-let [firstName, lastName, ...rest] = "Юлий Цезарь Император Рима".split(" ");
-rest; // ["Император", "Рима"]
-```
+    ```JavaScript
+    let [firstName, lastName, ...rest] = "Юлий Цезарь Император Рима".split(" ");
+    rest; // ["Император", "Рима"]
+    ```
 
   * Можно ставить дефолтные значения:
-```JavaScript
-let [firstName="Гость", lastName="Анонимный"] = [];
-```
+    ```JavaScript
+    let [firstName="Гость", lastName="Анонимный"] = [];
+    ```
 
   * С объектами такое тоже прокатит:
-```JavaScript
-let options = {
-    title: "Меню",
-    width: 100,
-    height: 200
-};
-let {title, width, height} = options;
-title; //"Меню"
-let {width: w, height: h, title} = options;
-w; //100
-let {width: w, height: h, title, somevar = 100500} = options;
-somevar; //100500
-```
-
-    Нюанс:
-```JavaScript
-	let a, b;
-    	{a, b} = {a:5, b:6};//Выражение внутри {} будет воспринято как блок кода
-      	({a, b} = {a:5, b:6});//а тут норм
-```
-
-  * Можно вкладывать конструкции друг в друга:
-```JavaScript
-let options = {
-    size: {
+    ```JavaScript
+    let options = {
+        title: "Меню",
         width: 100,
         height: 200
-    },
-    items: ["Пончик", "Пирожное"]
-}
-let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
-alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
-```
+    };
+    let {title, width, height} = options;
+    title; //"Меню"
+    let {width: w, height: h, title} = options;
+    w; //100
+    let {width: w, height: h, title, somevar = 100500} = options;
+    somevar; //100500
+    ```
+
+    Нюанс:
+    ```JavaScript
+    	let a, b;
+        	{a, b} = {a:5, b:6};//Выражение внутри {} будет воспринято как блок кода
+          	({a, b} = {a:5, b:6});//а тут норм
+    ```
+
+  * Можно вкладывать конструкции друг в друга:
+    ```JavaScript
+    let options = {
+        size: {
+            width: 100,
+            height: 200
+        },
+        items: ["Пончик", "Пирожное"]
+    }
+    let { title="Меню", size: {width, height}, items: [item1, item2] } = options;
+    alert(`${title} ${width} ${height} ${item1} ${item2}`);// Меню 100 200 Пончик Пирожное
+    ```
 
 5. Генерирование объектов  
 Можно при вызове функций генерить объект на ходу:
-```JavaScript
-function showMenu({title, width, height}) {};
-```
+    ```JavaScript
+    function showMenu({title, width, height}) {};
+    ```
 
 6. Аргументы по умолчанию  
 В функции можно объявлять параметры по умолчанию (синтаксис как в плюсах).
@@ -793,47 +813,47 @@ function showMenu({title, width, height}) {};
 
 7. Функции с переменным числом аргументов  
   Чтобы избавиться от `arguments`, можно объявить функцию с переменным числом аргументов:
-```JavaScript
-function showName(firstName, lastName, ...rest)
-```
+    ```JavaScript
+    function showName(firstName, lastName, ...rest)
+    ```
   `...` можно использовать и при вызове функции:
-```JavaScript
-let numbers = [2, 3, 15];
-Math.max(...numbers); //все равно что Math.max.apply(Math, numbers);
-```
+    ```JavaScript
+    let numbers = [2, 3, 15];
+    Math.max(...numbers); //все равно что Math.max.apply(Math, numbers);
+    ```
 
 8. Function.name  
 У функций появилось поле `name`:
-```JavaScript
-function func() {};
-func.name; //"func"
-//или даже
-let func = function() {}; //тоже будет name = "func"
+    ```JavaScript
+    function func() {};
+    func.name; //"func"
+    //или даже
+    let func = function() {}; //тоже будет name = "func"
 ```
 
 9. У функций, объявленных черех _function declaration_ видимость теперь блочная.
 
 10. Объявление функции через `=>`  
-```JavaScript
-let inc = x => x+1; //все равно что let inc = function(x) {return x+1;};
-let sum = (a,b) => a + b;
-let getTime = () => "";
-let getTime = () => {f1(); f2(); return ""};
-```
+    ```JavaScript
+    let inc = x => x+1; //все равно что let inc = function(x) {return x+1;};
+    let sum = (a,b) => a + b;
+    let getTime = () => "";
+    let getTime = () => {f1(); f2(); return ""};
+    ```
 В таких функциях нет своего `this` (он берется из вызвавшего кода),
 нет своего `arguments`.
 
 11. Новый строковый литерал  
-\` (обратная кавычка):
-```JavaScript
-var newstring = `lalala`
-```
+`\` (обратная кавычка):
+    ```JavaScript
+    var newstring = `lalala`
+    ```
  - допустимо делать многострочную строку
  - вставлять выражения через `${varname}` или даже `${arg1 + arg2}` например.
-```JavaScript
-var a = 1, b = 2;
-var string = `${a} + ${b} = ${a+b}`;
-```
+    ```JavaScript
+    var a = 1, b = 2;
+    var string = `${a} + ${b} = ${a+b}`;
+    ```
 
 [Foo](#foo)
 [Debug](#debug)
