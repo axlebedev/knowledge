@@ -449,6 +449,16 @@ Object.defineProperty(obj, prop, descriptor)
 Запрещено одновременно указывать значение `value` и функции `get`/`set`. Либо значение, либо функции для его чтения-записи, одно из двух.  
 Также запрещено и не имеет смысла указывать `writable` при наличии `get`/`set`-функций  
 
+Пример:
+```JavaScript
+var foo = {a:1, b: 2};
+Object.defineProperty(foo, 'name', {
+    get: function() {
+        return this.a+'-'+this.b;
+    }
+});
+```
+
 **Статические члены**  
 Имеем класс _Animal_. В нем можно делать статические члены:
 ```JavaScript
