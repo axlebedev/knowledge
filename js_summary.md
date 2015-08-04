@@ -357,7 +357,7 @@ var argStr = join.call(arguments, ':'); //и вызовем ее для argument
 передаются не отдельные аргументы, а массив аргументов.
 
 ###Области видимости
-Задачка с циклом:
+Задачка с циклом, один из вариантов решения:
 ```JavaScript
 for (var i = 0; i < 10; i++) {
     var shooter = function(cur) {
@@ -368,6 +368,27 @@ for (var i = 0; i < 10; i++) {
     shooters.push(shooter);
 }
 ```
+
+Аккуратнее работаем с кложурами и DOM-элементами, в следующем примере будет утечка памяти (из-за циклического референса):  
+ПЛОХО:
+```JavaScript
+function foo(element, a, b) {
+    element.onclick = function() {
+        /*uses a and b*/
+    };
+}
+```
+ХОРОШО:
+```JavaScript
+function foo(element, a, b) {
+    element.onclick = bar(a, b);
+}
+
+function bar(a, b) {
+    /*uses a and b*/
+}
+```
+
 
 ###Массивы
 ```JavaScript
