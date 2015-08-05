@@ -8,7 +8,15 @@
 console.time('1'); //начнет отсчет времени
 console.timeEnd('1'); //закончит отсчет времени и выведет в консоль
 ```
-###Типы данных
+###Типы данных  
+####void  
+Оператор `void` выполняет действие и возвращает `undefined`.  
+```JavaScript
+void 12; //undefined
+void (12 + 'lala'); //undefined
+void doSomething(); //undefined
+```
+
 ####Арифметические операторы
 Унарный `+` приводит к _Number_.
 ```JavaScript
