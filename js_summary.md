@@ -533,6 +533,22 @@ Object.defineProperty(obj, prop, descriptor)
 Если не-_configurable_ property попытаться удалить (`delete obj.prop`) - то без `"use strict"` ничего не произойдет,
 с ним - выкинет ошибку.
 
+**Простые поля**  
+```JavaScript
+var obj = {};
+obj.a = 2;
+```
+всё равно что
+```JavaScript
+var obj = {};
+Object.defineProperty( obj, "a", {
+value: 2,
+writable: true,
+configurable: true,
+enumerable: true
+} );
+```
+
 
 Пример:
 ```JavaScript
