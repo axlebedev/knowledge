@@ -182,3 +182,46 @@ https://learn.javascript.ru/searching-elements-internals
  * `id` — идентификатор
  * `href` — адрес ссылки
  * …многие другие…
+
+#### Атрибуты и DOM-свойства
+`document.body.someVar = 0/false/function` - это DOM-свойство  
+`<tag attr="0">` - это атрибут  
+
+Доступ к атрибутам:
+ - `elem.hasAttribute(name)` – проверяет наличие атрибута
+ - `elem.getAttribute(name)` – получает значение атрибута
+ - `elem.setAttribute(name, value)` – устанавливает атрибут
+ - `elem.removeAttribute(name)` – удаляет атрибут
+ - `elem.attributes` - возвращает псевдомассив элементов типа `Attr`
+
+В отличие от свойств, атрибуты:
+  - Всегда являются строками.
+  - Их имя нечувствительно к регистру (ведь это HTML)
+  - Видны в `innerHTML` (за исключением старых IE)
+
+Все, что мы устанавливаем в атрибут - приводится к строке  
+
+Атрибуты и свойства **не всегда** имеют одно и то же значение:
+```JavaScript
+a.href = '/';
+a.getAttribute('href'); // '/'
+a.href;  // полный URL
+```
+Чаще синхронизация — односторонняя: свойство зависит от атрибута, но не наоборот.  
+Для нестандартных атрибутов DOM-свойство не создается.
+
+
+Атрибуту `"class"` соответствует свойство `className` (а еще `classList`).  
+`elem.classList.contains("class")`  
+`elem.classList.add/remove("class")`  
+`elem.classList.toggle("class")`  
+
+Атрибуты `data-*` зарезервированы для пользовательских данных (HTML5).  
+Из жс к ним можно обратиться через `elem.dataset.*`  
+При этом дефисное написание превратится в camelCase:  
+```JavaScript
+<tag data-pizdets-govho="777">
+elem.dataset.pizdetsGovno; //777
+```
+
+Свойство/атрибут `hidden` не поддерживается в IE11.
