@@ -239,3 +239,40 @@ elem.dataset.pizdetsGovno; //777
  - **32** - Зарезервировано для браузера
 
 В IE8-, как обычно, своя атмосфера
+
+#### Создание/удаление узлов  
+ - `document.createElement(tag)` — создает элемент
+ - `document.createTextNode(value)` — создает текстовый узел
+ - `elem.cloneNode(deep)` — клонирует элемент, если deep == true, то со всеми 
+ потомками, если false — без потомков.
+ - `parent.appendChild(elem)`
+ - `parent.insertBefore(elem, nextSibling)`
+ - `parent.removeChild(elem)`
+ - `parent.replaceChild(newElem, elem)`
+
+Все эти методы возвращают elem.
+
+ - `elem.insertAdjacentHTML(where, html)` - _where_ принимает значения:
+   - `beforeBegin` — перед elem.
+   - `afterBegin` — внутрь elem, в самое начало.
+   - `beforeEnd` — внутрь elem, в конец.
+   - `afterEnd` — после elem
+ - `elem.insertAdjacentElement(where, newElem)`
+ - `elem.insertAdjacentText(where, text)` 
+
+Эти методы не работают в FF8-  
+
+`var fragment = document.createDocumentFragment()` создает недо-узел (у него 
+нет innerHTML, tagName и много чего еще). Но ему можно надобавлять детей, а потом
+впихнуть это все одной пачкой в наш документ. При этом сам фрагмент исчезает,
+на это место добавляются его дети. Имеет смысл только в больших вставках, и то
+надо бенчмаркать.
+
+Относительно новые методы из стандарта:
+ - `node.append(...nodes)` — вставляет nodes в конец node,
+ - `node.prepend(...nodes)` — вставляет nodes в начало node,
+ - `node.after(...nodes)` — вставляет nodes после узла node,
+ - `node.before(...nodes)` — вставляет nodes перед узлом node,
+ - `node.replaceWith(...nodes)` — вставляет nodes вместо node.
+
+Эти методы ничего не возвращают.
