@@ -320,3 +320,12 @@ alert( computedStyle.marginTop ); // выведет отступ в пиксел
 > Стили посещенных ссылок (_:visited_) получить нельзя! Безопасность и все такое
 
 В IE8- как обычно.
+
+### Геометрия элемента
+![Elem geometry](https://ru.js.cx/article/metrics/metric-css.png)
+
+#### Метрики
+![Window metrics](https://ru.js.cx/article/metrics/metric-all.png)
+
+`offsetParent`, `offsetLeft/Top` - если их пришлось использовать - значит я 
+говнокодю.
