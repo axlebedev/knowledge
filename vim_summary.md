@@ -2,13 +2,13 @@
 `:help something` или `:h something`
 
 # Command-line mode
-`:` - Ex command
-`/` - forward search
-`?` - backward search
-`=` - Vim script expression
-`@:` - повторить последнюю команду
-`:%s/target/replacement` - поиск с заменой
-`:%s/target/replacement/g` - поиск с заменой по всему файлу
+`:` - Ex command  
+`/` - forward search  
+`?` - backward search  
+`=` - Vim script expression  
+`@:` - повторить последнюю команду  
+`:%s/target/replacement` - поиск с заменой  
+`:%s/target/replacement/g` - поиск с заменой по всему файлу  
 
 `:noh` - снять подсветку результатов поиска
 
