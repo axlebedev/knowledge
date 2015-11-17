@@ -1,8 +1,10 @@
 ultisnip    
 vim-textobj-lastpat  
 https://github.com/tpope/vim-abolish  
-Встроенную документацию смотреть так:  
-`:help something` или `:h something`
+Встроенную документацию смотреть так:   
+`:help something` или `:h something`  
+Обновить `.vimrc` без перезапуска вима: `:source $MYVIMRC`, где 
+$MYVIMRC = ~/.vimrc по умолчанию
 
 # Command-line mode
 |Команда | Что делает|
@@ -169,6 +171,9 @@ https://github.com/tpope/vim-abolish
 | ``` `> ```  | |  | end of **last visual selection**
 | `<C-]>` | | | перейти к определению **кейворда** под курсором
 | `gf` |  | go to file | перейти к **файлу** под курсором
+| `<C-]>` | | | Jump to definition
+| `<C-t>` | | | назад в tags history
+| `g<C-]>` | | | Jump to definition, с возможностью выбора если несколько совпадений
 
 ## Регистры
 Перед командой можно указать регистр, в который запишется: `"{char}` и дальше  
@@ -372,6 +377,12 @@ expression register - `"=` - TODO
 `global!` или `vglobal`  
 
 # Конфиги
+http://vimcasts.org/episodes/tabs-and-spaces/
+`tabstop={number}` - ширина таба  
+`expandtab`/`noexpandtab` - если установлен - то вставляются пробелы вместо таба  
+`softtabstop={number}` - сколько пробелов будет стираться по Backspace  
+`shiftwidth={number}` - на сколько будет сдвигаться курсор по `>`/`<`  
+
 `set suffixesadd+=.h` - работает для открытия файлов. Самоподставляет к именам расширения.  
 `set path=.,**,/usr/bin` - работает для открытия файлов. Папки, в которых ищет.  
 `set exrc` - говорит виму читать еще файл с настройками в открываемой папки.  
