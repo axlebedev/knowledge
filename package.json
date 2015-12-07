@@ -1,0 +1,30 @@
+{
+  "name": "js_summary",
+  "version": "1.0.0",
+  "description": "Summaries for books and posts",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexey-broadcast/learn_js_summary.git"
+  },
+  "author": "Alex Lebedev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexey-broadcast/learn_js_summary/issues"
+  },
+  "homepage": "https://github.com/alexey-broadcast/learn_js_summary",
+  "devDependencies": {
+    "gulp-connect": "^2.2.0",
+    "gulp-marked": "^1.0.0",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "marked": "^0.3.5"
+  },
+  "dependencies": {
+    "gulp-markdown": "^1.1.0",
+    "gulp-markdown-livereload": "^1.0.0"
+  }
+}
