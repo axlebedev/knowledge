@@ -1,9 +1,0 @@
-https://github.com/getify/You-Dont-Know-JS/blob/master/scope%20&%20closures/ch1.md
-
-a variable is found for an RHS look-up, but you try to do something with its value that is impossible, such as trying to execute-as-function a non-function value, or reference a property on a null or undefined value, then Engine throws a different kind of error, called a _TypeError_.
-ReferenceError is Scope resolution-failure related, whereas TypeError implies that Scope resolution was successful, but that there was an illegal/impossible action attempted against the result.
-
-
-###eval:
-setTimeout(..) and setInterval(..) can take a string for their respective first argument, the contents of which are evaluated as the code of a dynamically-generated function.
-The new Function(..) function constructor similarly takes a string of code in its last argument
