@@ -21,6 +21,109 @@ for (let [index, elem] of arr.entries())
 
 
 
+# Number
+Теперь можно в различных нотациях:
+```JavaScript
+var decimal = 987;
+var hexadecimal = 0xFF;
+var binary = 0b11;
+var octal = 0o17;
+
+hexadecimal.toString(10); // 255
+(4).toString(2);          // 100
+```
+
+## Парсинг из строки в число
+```JavaScript
+// ES5-функции:
+parseInt('100');        // 100
+parseInt('0xFF');       // 255
+parseInt('0xFF', 10);   // 0
+parseInt('100', 2);     // 4
+// с '0b' и '0o' такое не прокатит! Даже если укажем базу
+parseInt('0b100', 2);   // 0, ошибка!!!
+parseInt('100', 2);     // 4, ок
+
+Number('0b100');        // 4, тоже ок
+
+parseFloat('0.123');
+
+// В ES6 эти методы входят в Number:
+// Работают они также
+Number.parseInt(val, radix);
+Number.parseFloat(val);
+```
+
+## Проверка на то, что перед нами число и оно конечно
+```JavaScript
+var value = /*whatever*/;
+Number.isFinite(value); // true if value is not ±Infinity or NaN
+Number.isFinite('123'); // false, строку не приводит
+isFinite('123'); // true, глобальная функция приводит
+```
+
+## Проверка на NaN
+```JavaScript
+let x = NaN;
+
+x === NaN;       // false, NaN не равен даже самому себе
+x !== x;         // true, но выглядит уебищно
+Number.isNaN(x); // true, that's it!
+
+Number.isNaN('???'); // false, строки не приводит
+isNaN('???');        // true, строки приводит
+```
+
+## Number.EPSILON
+```JavaScript
+0.1 + 0.2 === 0.3; // false, ошибка округления
+Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON; // true, вот так канонично
+```
+
+## Проверка на целое число
+`Number.isInteger(value)` вернет `true`, если перед нами число (не строка) 
+и оно не имеет дробной части:
+```JavaScript
+Number.isInteger(123);      // true
+Number.isInteger(-123);     // true
+Number.isInteger('123');    // false
+Number.isInteger(123.1);    // false
+Number.isInteger(NaN);      // false
+Number.isInteger(Infinity); // false
+```
+
+## Безопасные целые
+Если число больше максимума, то оно уже будет точно верным
+```JavaScript
+Number.isSafeInteger(number); // true если -2^53 < number < 2^53
+Number.MIN_SAFE_INTEGER; // 2^53
+Number.MAX_SAFE_INTEGER; // -2^53
+
+console.log(9007199254740993); // 9007199254740992, внимание на последнюю цифру
+```
+
+## Math
+Новые ES6-методы:
+```JavaScript
+Math.sign(x); // вернет 1, -1 или NaN
+
+Math.trunc(value); // отсекает дробную часть, возвращает целое
+Math.trunc(3.9); // 3
+Math.trunc(-3.9); // -3
+
+Math.cbrt(8); // 2, кубический корень
+
+// еще много всего: логарифмы, тригонометрия etc.
+```
+
+
+
+
+
+
+
+
+
 
 # Строки
 Новые строки обозначаются обратными кавычками.  
