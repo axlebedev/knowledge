@@ -127,14 +127,28 @@ Math.cbrt(8); // 2, кубический корень
 
 # Строки
 Новые строки обозначаются обратными кавычками.  
-Ниже перечислены некоторые фишки:
+
+## Новые методы объекта String
+Работают и для старых строк
+```JavaScript
+'hello'.startsWith('hell'); // true
+'hello'.endsWith('ello'); // true
+'hello'.includes('ell'); // true
+'doo '.repeat(3); // 'doo doo doo '
+```
+
 
 ## Значения внутри строки
 ```JavaScript
+// Значения переменных
 var x = 1, y = 2;
 '('+x+', '+y+')' // es5
 `(${x}, ${y})` // es6
 // внимание на обратные кавычки
+
+// Символы юникода
+console.log('\uD83D\uDE80'); // es5: two code units
+console.log('\u{1F680}');    // es6: single code point
 ```
 
 ## Multiline
@@ -147,6 +161,46 @@ var es5multiline2 = 'lala\
 var es6multiline = `lala
                     bebe`;
 ```
+
+## Без экранирования
+```JavaScript
+let raw = String.raw`Not a newline: \n`; // 'Not a newline: \\n'
+```
+
+## Итерабельность
+Обращаем внимание, что кавычки - старые
+```JavaScript
+// Вот так - обойдет посимвольно 3 символа
+for (let ch of 'abc')
+
+// Вот так - тоже 3 символа
+for (let ch of 'x\uD83D\uDE80y')
+
+// А с помощью троеточия делаем массив
+let chars = [...'abc']; // ['a', 'b', 'c']
+// Можно быстро посчитать длину строки
+[...'x\uD83D\uDE80y'].length; // 3
+
+// Или реверснуть строку - полезно с двухсимвольными юникодами
+[...'x\uD83D\uDE80y'].reverse().join(''); // order of \uD83D\uDE80 is preserved
+// Работает только с non-BMP, проблемы с combining marks
+```
+
+## Работа с юникодовыми wideчарами
+```JavaScript
+// TODO: описать
+'x\uD83D\uDE80y'.codePointAt(0).toString(16);
+String.fromCodePoint(0x78, 0x1f680, 0x79) === 'x\uD83D\uDE80y'
+
+// Еще вот такой есть:
+String.prototype.normalize(form? : string) : string
+```
+
+
+
+
+
+# Symbol - новый примитивный тип
 
 
 
