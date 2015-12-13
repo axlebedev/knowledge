@@ -1,7 +1,91 @@
+TODO: разобраться, как работают _code points_ и как различать от юникодов
+
 # let, const
+**Объявления `let` и `const` не возносятся наверх, как `var`.**  
+Это не совсем точно: на самом деле когда мы входим в блок, то память под эти
+переменные выделяется. Но при попытке обратиться к ним до определения мы
+словим _ReferenceError_.
+
+## let
 `let` - это как `var`, только с блочной видимостью.  
 Блок - как в плюсах - любая пара фигурных скобок.  
-`const` - не может быть слева от оператора присваивания.  
+
+## const
+Обращаем внимание, что если объект константен - ссылки внутри него нет.
+```JavaScript
+const obj = {};
+obj.prop = 123;
+console.log(obj.prop); // 123
+
+obj = Object.freeze(obj); // теперь и внутри объекта нихренашеньки не поменять
+```
+
+## Поведение в циклах
+```JavaScript
+// Для функций внутри цикла это будет одна и та же переменная
+for (var i=0; i < 3; i++)
+
+// Каждую итерацию создается новая переменная
+for (let i=0; i < 3; i++)
+
+// const работает как var, но нам в данном случае похуй
+```
+
+## Параметры функции
+```JavaScript
+function func1(arg) {
+    let arg; // static error: duplicate declaration of `arg`
+}
+
+function func2(arg) {
+    {
+        let arg; // shadows parameter `arg`
+    }
+}
+
+// Сравним с var
+function func1(arg) {
+    var arg; // does nothing
+}
+function func2(arg) {
+    {
+        // We are still in same `var` scope as `arg`
+        var arg; // does nothing
+    }
+} 
+```
+
+Если у функции есть дефолтные параметры, то они рассматриваются как `let`:
+```JavaScript
+// OK: `y` accesses `x` after it has been declared
+function foo(x=1, y=x) {
+    return [x, y];
+}
+// Exception: `x` tries to access `y` within TDZ
+function bar(x=y, y=2) {
+    return [x, y];
+}
+```
+
+У дефолтных параметров свой scope:
+```JavaScript
+let foo = 'outer';
+function bar(func = x => foo) {
+    // foo не виден
+}
+```
+
+## Глобальный объект
+`var` и _function declarations_ являются свойствами глобального объекта
+(`window` в браузерах и `global` в ноде).  
+`let`, `const` и классы - просто глобальные объекты, не являются ничьими 
+свойствами.
+
+
+
+
+
+
 
 
 
@@ -290,19 +374,215 @@ arr.map(x => x * x);
 
 
 # Destructuring
+Паттерн деструктурирования может быть 3 видов:
+ 1. Assignment target. `x`
+ 2. Object pattern. `{ first: «pattern», last: «pattern» }`
+ 3. Array pattern. `[ «pattern», «pattern» ]`
+Да-да, их можно вкладывать друг в друга:
 ```JavaScript
-// пример с массивом
-let [ , v1, v2] = 'orange fruit dragon'.split();
+let obj = { a: [{ foo: 123, bar: 'abc' }, {}], b: true };
+let { a: [{foo: f}] } = obj; // f = 123
+```
 
-// пример с объектом
-let obj = { foo: 123 };
-let {writable, configurable} = Object.getOwnPropertyDescriptor(obj, 'foo');
+А также можно и так:
+```JavaScript
+let {length : len} = 'abc'; // len = 3
+let {toString: s} = 123; // s = Number.prototype.toString
+```
+
+А если у нас не будет найдено нужное свойство, то будет `undefined`:
+```JavaScript
+let [x] = []; // x = undefined
+let {prop:y} = {}; // y = undefined
+```
+
+Можно подставлять дефолтные значения:
+```JavaScript
+let [x=3, y] = []; // x = 3; y = undefined
+let {foo: x=3, bar: y} = {}; // x = 3; y = undefined
+
+// Можно даже какой-нибудь вызов функции например
+let {prop: y=someFunc()} = someValue;
+
+// Аккуратно! Если свойство есть, только оно undefined - то дефолт.
+let [x=1] = [undefined]; // x = 1
+let {prop: y=2} = {prop: undefined}; // y = 2
+
+// Были рассмотрены дефолтные значения для переменных (тип 1)
+// Рассмотрим же для типов 2 и 3:
+let [{ prop: x } = {}] = []; // Все работает!
+```
+Главное, не забывать что тут все _nesting_, и деструктурирование идет по шагам.
+
+А вообще с левую часть можно запихивать не только примитивные переменные:
+```JavaScript
+// Пример 1
+let obj = {};
+let arr = [];
+
+({ foo: obj.prop, bar: arr[0] }) = { foo: 123, bar: true };
+
+console.log(obj); // {prop:123}
+console.log(arr); // [true]
+
+// Пример 2
+let obj = {};
+[first, ...obj.rest] = ['a', 'b', 'c'];
+    // first = 'a'; obj.rest = ['b', 'c']
+```
+
+Можно делать как в питоне:
+```JavaScript
+[a, b] = [b, a];
+```
+А можно как в лиспе:
+```JavaScript
+let [first, ...rest] = ['a', 'b', 'c']; // first = 'a'; rest = ['b', 'c']
+// только хвост не изымается, пидр
+```
+
+
+## Массив
+```JavaScript
+let [ , v1, v2] = 'orange fruit dragon'.split();
+```
+
+Обход массива, учитываем индексы:
+```JavaScript
+let arr1 = ['a', 'b'];
+for (let [index, element] of arr1.entries()) {}
+```
+
+Можно пропускать ненужное:
+```JavaScript
+let arr1 = ['a', 'b', 'c'];
+let [,,z] = arr1; // z = 'c'
+```
+
+Оператор многоточия работает:
+```JavaScript
+let [x, ...y] = 'abc'; // x='a'; y=['b', 'c']
+let [x, y, ...z] = 'a'; // x='a'; y=undefined, z = []
+
+// Классный пример:
+let [x, ...[y, z]] = ['a', 'b', 'c']; // x = 'a'; y = 'b'; z = 'c'
+// Оператор многоточия работает следующим образом:
+// [y, z] = ['b', 'c']
+```
+
+Не забываем, что итератор в стрингах работает с 21-разрядными _code points_,
+а не с 16-разрядными юникодами:
+```JavaScript
+let [x,y,z] = 'a\uD83D\uDCA9c'; // x='a'; y='\uD83D\uDCA9'; z='c'
+```
+
+Деструктурироване работает и для _Set_. Итератор возвращает элементы в том 
+порядке, в котором они были внесены.
+```JavaScript
+let [x,y] = new Set(['a', 'b']); // x='a'; y='b’;
+```
+
+Если мы придумаем такой генератор (возвращает по очереди натуральные числа), 
+то и тут все будет работать:
+```JavaScript
+function* allNaturalNumbers() {
+  for (let n = 0; ; n++) {
+    yield n;
+  }
+}
+
+let [x, y, z] = allNaturalNumbers(); // x=0; y=1; z=2
+```
+
+Фейл нас ждет, если мы попытаемся деструктурировать в массив что-то
+неитерабельное:
+```JavaScript
+let x;
+[x] = [true, false]; // OK, Arrays are iterable
+[x] = 'abc'; // OK, strings are iterable
+[x] = { * [Symbol.iterator]() { yield 1 } }; // OK, iterable
+
+[x] = {}; // TypeError, empty objects are not iterable
+[x] = undefined; // TypeError, not iterable
+[x] = null; // TypeError, not iterable
+```
+Таким образом мы можем проверять _нечто_ на итерабельность:
+```JavaScript
+[] = {}; // TypeError, empty objects are not iterable
+[] = undefined; // TypeError, not iterable
+[] = null; // TypeError, not iterable
 ```
 
 
 
 
+## Объект
+```JavaScript
+let {writable, configurable} = Object.getOwnPropertyDescriptor(obj, 'foo');
+
+// Делаем именно так:
+let obj = { first: 'Jane', last: 'Doe' };
+let { last, first } = obj; // first = 'Jane', last = 'Doe'
+let { last } = obj; // last = 'Doe'
+let { first: f, last: l } = obj; // f = 'Jane', l = 'Doe'
+
+// Вот еще пример:
+let arr2 = [
+    {name: 'Jane', age: 41},
+    {name: 'John', age: 40},
+];
+for (let {name: n, age: a} of arr2) {
+    console.log(n, a);
+}
+```
+
+Аккуратнее с типами:
+```JavaScript
+let { prop: x } = undefined; // TypeError
+let { prop: y } = null; // TypeError
+
+// В следующих выражениях заворачивание в скобки обязательно, 
+// ибо в жс нельзя начинать выражение с фигурных скобок
+({} = [true, false]); // OK, Arrays are coercible to objects
+({} = 'abc'); // OK, strings are coercible to objects
+
+({} = undefined); // TypeError
+({} = null); // TypeError
+```
+
+Если название свойства заранее неизвестно - не беда:
+```JavaScript
+const FOO = 'foo';
+// вместо [FOO] подставится foo
+let { [FOO]: f } = { foo: 123 }; // f = 123
+```
+Можно и с символами замутить
+
+
+## Возможные ошибки
+**Нельзя** смешивать в одном выражении объявление переменных и не-объявление:
+```JavaScript
+// Здесь интерпретатор ломается: мы f объявили, а b - нет. Так нельзя
+let f;
+let { foo: f, bar: b } = someObject;
+    // SyntaxError: Duplicate declaration, f
+
+// Ошибки нет, обе переменные уже объявлены, можно присваивать
+let f;
+let b;
+({ foo: f, bar: b }) = someObject;
+
+```
+
+
+
+
+
+
 # Классы
+Классы **не hoisted**! Это связано с тем, что наследование определено как
+выражения.
+
 ```JavaScript
 class Person {
     constructor(name) {
@@ -352,7 +632,7 @@ let obj = {
 
 
 
-# Новые типы данных
+# Контейнеры
 ## Map
 Ключом может быть не обязательно строка, любое значение.
 ```JavaScript
