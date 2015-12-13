@@ -141,12 +141,13 @@ Math.cbrt(8); // 2, кубический корень
 ## Значения внутри строки
 ```JavaScript
 // Значения переменных
+// внимание на обратные кавычки
 var x = 1, y = 2;
 '('+x+', '+y+')' // es5
 `(${x}, ${y})` // es6
-// внимание на обратные кавычки
+`(${x + 1}, ${y})` // es6, можно туда в принципе любой код втыкать
 
-// Символы юникода
+// Символы юникода, можно и с обычными кавычками
 console.log('\uD83D\uDE80'); // es5: two code units
 console.log('\u{1F680}');    // es6: single code point
 ```
@@ -199,8 +200,26 @@ String.prototype.normalize(form? : string) : string
 
 
 
+# Регулярки
+http://xregexp.com/ - это отдельная либа
+```JavaScript
+var parts = '/2012/10/Page.html'.match(XRegExp.rx`
+    ^ # match at start of string only
+    / (?<year> [^/]+ ) # capture top dir name as year
+    / (?<month> [^/]+ ) # capture subdir name as month
+    / (?<title> [^/]+ ) # capture base name as title
+    \.html? $ # .htm or .html file ext at end of path
+`);
+console.log(parts.year); // 2012
+```
+
+
+
+
+
 
 # Symbol - новый примитивный тип
+TODO: http://exploringjs.com/es6/ch_symbols.html
 
 
 
