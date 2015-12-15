@@ -1,4 +1,5 @@
 TODO: разобраться, как работают _code points_ и как различать от юникодов
+TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html
 
 # let, const
 **Объявления `let` и `const` не возносятся наверх, как `var`.**  
@@ -99,6 +100,27 @@ var arr = ['a', 'b', 'c'];
 for (let elem of arr)
 // а можно элемент с индексом:
 for (let [index, elem] of arr.entries())
+```
+
+## Array.from
+Приводит что-то к массиву. Что-то не обязательно итерабельно, но оно должно
+иметь проиндексированные элементы и `length`.
+```JavaScript
+let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': 'c',
+    length: 3
+};
+
+// es5:
+var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+
+// es6:
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+
+// TypeError: Cannot spread non-iterable object.
+let arr3 = [...arrayLike];
 ```
 
 
@@ -310,6 +332,12 @@ TODO: http://exploringjs.com/es6/ch_symbols.html
 
 
 # Оператор многоточия
+## В массивах
+Разворачивает итерабельное что-нибудь в элементы массива
+```JavaScript
+[1, ...[2,3], 4]; // [1, 2, 3, 4]
+```
+
 ## Аргумент функции в объявлении
 Означает "все остальное, что попало в скобки при вызове".
 ```JavaScript
@@ -335,6 +363,14 @@ console.log([...arr1, ...arr2, ...arr3]);
     // [ 'a', 'b', 'c', 'd', 'e' ]
 ```
 
+## Приведение итерабельного _чего-нибудь_ к массиву
+```JavaScript
+let set = new Set([11, -1, 6]);
+let arr = [...set]; // [11, -1, 6]
+```
+Вообще есть способ получше, в главе про массивы
+
+
 
 
 
@@ -346,11 +382,91 @@ console.log([...arr1, ...arr2, ...arr3]);
 ```JavaScript
 function foo(x=0, y=0)
 ```
-
-## Именованные параметры (как в питоне)
+Под капотом будет выглядеть так:
 ```JavaScript
-function selectEntries({ start=0, end=-1, step=1 }) // TODO
+function logSum(x=0, y=0) {
+    console.log(x + y);
+}
+// becomes:
+{
+    let [x=0, y=0] = [7, 8];
+    {
+        console.log(x + y);
+    }
+}
 ```
+**Warning!** если мы передаем `undefined`, то подставится дефоолтное.
+
+Можно делать так, чтобы одни параметры зависели от других (важен порядок):
+```JavaScript
+function foo(x=0, y=x)
+// но:
+
+function foo(x=y, y=0) 
+// не сработает, мы сначала используем 'y', потом его объявляем
+```
+Можно даже делать их зависимыми от внешних переменных (от тех что внутри 
+функции - конечно же нельзя):
+```JavaScript
+let superVariable;
+function foo(x=superVariable)
+```
+
+## Именованные параметры (почти как в питоне)
+```JavaScript
+function selectEntries({ start=0, end=-1, step=1 } = {}) {
+    // The object pattern is an abbreviation of:
+    // { start: start=0, end: end=-1, step: step=1 }
+}
+
+selectEntries({ start: 10, end: 30, step: 2 });
+selectEntries({ step: 3 });
+selectEntries({});
+selectEntries();
+```
+
+## Троеточие в параметрах
+```JavaScript
+function format(unuseful, ...params) {
+    return params;
+}
+console.log(format('a', 'b', 'c')); // ['b', 'c']
+console.log(format('a')); // []
+```
+
+Так что теперь **не используем `arguments`**. Профит в том, что в новом методе
+`args` - всегда _Array_:
+```JavaScript
+// Было в es5:
+function format() {
+    for(var i = 0; i < arguments.length; ++i) {...}
+}
+// Стало es6:
+function format(...args) {
+    for(var i = 0; i < args.length; ++i) {...}
+}
+```
+А аргументы по умолчанию с таким подходом делаем руками:
+```JavaScript
+// Было в es5:
+function format(x = 0, y = 0) {
+    for(var i = 0; i < arguments.length; ++i) {...}
+}
+// Стало es6:
+function format(...args) {
+    let [x = 0, y = 0] = args;
+    for(var i = 0; i < args.length; ++i) {...}
+}
+```
+
+А вообще `arguments` теперь итерабелен, со всеми плюшками (`for of` и многоточие)
+
+## Троеточие в вызове
+Разворачивает массив в перечисление параметров:
+```JavaScript
+Math.max(-1, ...[-1, 5, 11], 3); // 11
+```
+
 
 
 
