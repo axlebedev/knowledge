@@ -1,6 +1,6 @@
-TODO: разобраться, как работают _code points_ и как различать от юникодов
-TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html
-TODO: хорошие советы по code style: 13.2 http://exploringjs.com/es6/ch_callables.html
+TODO: разобраться, как работают _code points_ и как различать от юникодов  
+TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html  
+TODO: хорошие советы по code style: 13.2 http://exploringjs.com/es6/ch_callables.html  
 
 # let, const
 **Объявления `let` и `const` не возносятся наверх, как `var`.**  
@@ -13,25 +13,29 @@ TODO: хорошие советы по code style: 13.2 http://exploringjs.com/e
 Блок - как в плюсах - любая пара фигурных скобок.  
 
 ## const
-Обращаем внимание, что если объект константен - ссылки внутри него нет.
+Обращаем внимание, что даже когда объект константен - 
+ссылки внутри него не константны.
 ```JavaScript
 const obj = {};
-obj.prop = 123;
+obj.prop = 123; // сработало, в сам obj мы больше ничего не присвоим, а его свойствам можно
 console.log(obj.prop); // 123
 
 obj = Object.freeze(obj); // теперь и внутри объекта нихренашеньки не поменять
 ```
 
 ## Поведение в циклах
+`let`: для функций внутри цикла это будет одна и та же переменная
+(вспоминаем задачу о shooter)
 ```JavaScript
-// Для функций внутри цикла это будет одна и та же переменная
 for (var i=0; i < 3; i++)
-
-// Каждую итерацию создается новая переменная
-for (let i=0; i < 3; i++)
-
-// const работает как var, но нам в данном случае похуй
 ```
+
+`let`: каждую итерацию создается новая переменная
+```JavaScript
+for (let i=0; i < 3; i++)
+```
+
+`const` работает как var, но нам в данном случае похуй
 
 ## Параметры функции
 ```JavaScript
@@ -70,6 +74,7 @@ function bar(x=y, y=2) {
 ```
 
 У дефолтных параметров свой scope:
+TODO: уточнить, что имеется в виду
 ```JavaScript
 let foo = 'outer';
 function bar(func = x => foo) {
@@ -94,7 +99,7 @@ function bar(func = x => foo) {
 
 
 # Массивы
-## `for..of`
+## for..of
 ```JavaScript
 var arr = ['a', 'b', 'c'];
 // можно получать элемент:
@@ -104,7 +109,7 @@ for (let [index, elem] of arr.entries())
 ```
 
 ## Array.from
-Приводит что-то к массиву. Что-то не обязательно итерабельно, но оно должно
+Приводит _что-то_ к массиву. _Что-то_ не обязательно итерабельно, но оно должно
 иметь проиндексированные элементы и `length`.
 ```JavaScript
 let arrayLike = {
@@ -147,7 +152,7 @@ hexadecimal.toString(10); // 255
 
 ## Парсинг из строки в число
 ```JavaScript
-// ES5-функции:
+// es5-функции:
 parseInt('100');        // 100
 parseInt('0xFF');       // 255
 parseInt('0xFF', 10);   // 0
@@ -156,12 +161,12 @@ parseInt('100', 2);     // 4
 parseInt('0b100', 2);   // 0, ошибка!!!
 parseInt('100', 2);     // 4, ок
 
+// можно для этого использовать конструктор Number
 Number('0b100');        // 4, тоже ок
 
 parseFloat('0.123');
 
-// В ES6 эти методы входят в Number:
-// Работают они также
+// В es6 эти методы входят в Number, работают они также
 Number.parseInt(val, radix);
 Number.parseFloat(val);
 ```
@@ -180,20 +185,21 @@ let x = NaN;
 
 x === NaN;       // false, NaN не равен даже самому себе
 x !== x;         // true, но выглядит уебищно
-Number.isNaN(x); // true, that's it!
+isNaN('???');    // true, строки приводит
 
+Number.isNaN(x);     // true, that's it!
 Number.isNaN('???'); // false, строки не приводит
-isNaN('???');        // true, строки приводит
 ```
 
 ## Number.EPSILON
+Нужен, чтобы избегать ошибок округления. Обычный математический эпсилон.
 ```JavaScript
 0.1 + 0.2 === 0.3; // false, ошибка округления
 Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON; // true, вот так канонично
 ```
 
 ## Проверка на целое число
-`Number.isInteger(value)` вернет `true`, если перед нами число (не строка) 
+`Number.isInteger(value)` вернет `true`, если перед нами конечное число (не строка) 
 и оно не имеет дробной части:
 ```JavaScript
 Number.isInteger(123);      // true
@@ -205,7 +211,7 @@ Number.isInteger(Infinity); // false
 ```
 
 ## Безопасные целые
-Если число больше максимума, то оно уже будет точно верным
+Если число больше максимума ( _2^53_ ), то оно уже будет точно верным
 ```JavaScript
 Number.isSafeInteger(number); // true если -2^53 < number < 2^53
 Number.MIN_SAFE_INTEGER; // 2^53
@@ -251,15 +257,16 @@ Math.cbrt(8); // 2, кубический корень
 
 
 ## Значения внутри строки
+Значения переменных, внимание на обратные кавычки:
 ```JavaScript
-// Значения переменных
-// внимание на обратные кавычки
 var x = 1, y = 2;
 '('+x+', '+y+')' // es5
 `(${x}, ${y})` // es6
 `(${x + 1}, ${y})` // es6, можно туда в принципе любой код втыкать
+```
 
-// Символы юникода, можно и с обычными кавычками
+Символы юникода, можно и с обычными кавычками:
+```JavaScript
 console.log('\uD83D\uDE80'); // es5: two code units
 console.log('\u{1F680}');    // es6: single code point
 ```
@@ -298,10 +305,11 @@ let chars = [...'abc']; // ['a', 'b', 'c']
 [...'x\uD83D\uDE80y'].reverse().join(''); // order of \uD83D\uDE80 is preserved
 // Работает только с non-BMP, проблемы с combining marks
 ```
+TODO: разобраться с юникодами, BMP и прочей строковой херотой
 
 ## Работа с юникодовыми wideчарами
+// TODO: описать, что эти методы делают
 ```JavaScript
-// TODO: описать
 'x\uD83D\uDE80y'.codePointAt(0).toString(16);
 String.fromCodePoint(0x78, 0x1f680, 0x79) === 'x\uD83D\uDE80y'
 
@@ -338,6 +346,7 @@ TODO: http://exploringjs.com/es6/ch_symbols.html
 
 
 # Генераторы
+Выглядят, как указатели на функцию:
 ```JavaScript
 // Generator function expression:
 const foo = function* (x) { ··· };
@@ -346,9 +355,9 @@ function* foo(x) { ··· }
 ```
 
 ## this в генераторах
-_Function/method calls:_ `this` is handled like it is with traditional 
-functions. The results of such calls are generator objects.
-_Constructor calls:_ Accessing `this` inside a generator function causes 
+ - _Function/method calls:_ `this` is handled like it is with traditional 
+functions. The results of such calls are generator objects.  
+ - _Constructor calls:_ Accessing `this` inside a generator function causes 
 a `ReferenceError`. The result of a constructor call is a generator object.
 
 
@@ -365,7 +374,8 @@ a `ReferenceError`. The result of a constructor call is a generator object.
 ## Аргумент функции в объявлении
 Означает "все остальное, что попало в скобки при вызове".
 ```JavaScript
-function logAllArguments(arg1, ...args)
+function logAllArguments(arg1, ...args) { /*some code*/ }
+logAllArguments(1, 2, 3, 4) // arg1 = 1, args = [2, 3, 4]
 ```
 
 ## Аргумент функции при вызове
@@ -374,7 +384,7 @@ function logAllArguments(arg1, ...args)
 ```JavaScript
 function fn(arg1, arg2) {/*some code*/};
 let arr = [1, 2];
-fn(...arr); // тут мы как будто передали через запятую
+fn(...arr); // тут мы как будто сделали fn(1, 2)
 ```
 
 ## Конкатенация массивов
@@ -392,7 +402,7 @@ console.log([...arr1, ...arr2, ...arr3]);
 let set = new Set([11, -1, 6]);
 let arr = [...set]; // [11, -1, 6]
 ```
-Вообще есть способ получше, в главе про массивы
+Вообще есть способ получше (_Array.from_), в главе про массивы
 
 
 
@@ -425,7 +435,7 @@ function logSum(x=0, y=0) {
     }
 }
 ```
-**Warning!** если мы передаем `undefined`, то подставится дефоолтное.
+**Warning!** если мы передаем `undefined`, то подставится дефолтное.
 
 Можно делать так, чтобы одни параметры зависели от других (важен порядок):
 ```JavaScript
@@ -433,7 +443,7 @@ function foo(x=0, y=x)
 // но:
 
 function foo(x=y, y=0) 
-// не сработает, мы сначала используем 'y', потом его объявляем
+// не сработает, потому что мы сначала используем 'y', потом его объявляем
 ```
 Можно даже делать их зависимыми от внешних переменных (от тех что внутри 
 функции - конечно же нельзя):
@@ -443,6 +453,7 @@ function foo(x=superVariable)
 ```
 
 ## Именованные параметры (почти как в питоне)
+TODO: рассмотреть поподробнее комментарий в коде ниже
 ```JavaScript
 function selectEntries({ start=0, end=-1, step=1 } = {}) {
     // The object pattern is an abbreviation of:
@@ -470,10 +481,12 @@ console.log(format('a')); // []
 // Было в es5:
 function format() {
     for(var i = 0; i < arguments.length; ++i) {...}
+    // arguments - это не Array!!
 }
 // Стало es6:
 function format(...args) {
     for(var i = 0; i < args.length; ++i) {...}
+    // args - это Array :)
 }
 ```
 А аргументы по умолчанию с таким подходом делаем руками:
@@ -495,6 +508,7 @@ function format(...args) {
 Разворачивает массив в перечисление параметров:
 ```JavaScript
 Math.max(-1, ...[-1, 5, 11], 3); // 11
+// Все равно что Math.max(-1, -1, 5, 11, 3); 
 ```
 
 
@@ -509,6 +523,7 @@ Math.max(-1, ...[-1, 5, 11], 3); // 11
  - `this`
  - `new.target`
 
+Синтаксис такой:
 ```JavaScript
 let arr = [1, 2, 3];
 // es5 style
@@ -541,6 +556,7 @@ arr.map(x => x * x);
 let obj = { a: [{ foo: 123, bar: 'abc' }, {}], b: true };
 let { a: [{foo: f}] } = obj; // f = 123
 ```
+Главное, не забывать что тут все _nesting_, и деструктурирование идет по шагам.
 
 А также можно и так:
 ```JavaScript
@@ -570,7 +586,6 @@ let {prop: y=2} = {prop: undefined}; // y = 2
 // Рассмотрим же для типов 2 и 3:
 let [{ prop: x } = {}] = []; // Все работает!
 ```
-Главное, не забывать что тут все _nesting_, и деструктурирование идет по шагам.
 
 А вообще с левую часть можно запихивать не только примитивные переменные:
 ```JavaScript
@@ -600,9 +615,9 @@ let [first, ...rest] = ['a', 'b', 'c']; // first = 'a'; rest = ['b', 'c']
 ```
 
 
-## Массив
+## Destructuring массива
 ```JavaScript
-let [ , v1, v2] = 'orange fruit dragon'.split();
+let [v0, v1, v2] = 'orange fruit dragon'.split();
 ```
 
 Обход массива, учитываем индексы:
@@ -674,7 +689,7 @@ let x;
 
 
 
-## Объект
+## Destructuring объекта
 ```JavaScript
 let {writable, configurable} = Object.getOwnPropertyDescriptor(obj, 'foo');
 
@@ -711,10 +726,10 @@ let { prop: y } = null; // TypeError
 Если название свойства заранее неизвестно - не беда:
 ```JavaScript
 const FOO = 'foo';
-// вместо [FOO] подставится foo
+// вычисляемое название свойства: вместо [FOO] подставится foo
 let { [FOO]: f } = { foo: 123 }; // f = 123
 ```
-Можно и с символами замутить
+Можно и с `Symbol`'ами замутить
 
 
 ## Возможные ошибки
@@ -730,6 +745,8 @@ let f;
 let b;
 ({ foo: f, bar: b }) = someObject;
 
+// Ошибки нет, обе переменные не объявлены, можно объявлять и присваивать
+({ foo: f, bar: b }) = someObject;
 ```
 
 
@@ -738,8 +755,8 @@ let b;
 
 
 # Классы
-Классы **не hoisted**! Это связано с тем, что наследование определено как
-выражения.  
+Классы **не hoisted**! Это связано с тем, что наследование разворачивается
+в много строк кода.  
 Метод `constructor` - специальный, он становится равен самому классу:
 `Person.prototype.constructor === Person // true`  
 Класс не может быть вызван как метод или функция.  
@@ -758,10 +775,10 @@ class Person {
 ```
 
 ## Наследование
-```JavaScript
-Super-method calls: super.method('abc')
-Super-constructor calls: super(8)
+Super-method calls: `super.method('abc')` в объявлении методов и конструктора.  
+Super-constructor calls: `super(8)` в объявлении конструктора класса.
 
+```JavaScript
 class Employee extends Person {
     constructor(name, title) {
         super(name);
@@ -776,8 +793,9 @@ class Employee extends Person {
 }
 ```
 Для того, чтобы `super` работал как надо, в объекте должно быть 
-`property [[HomeObject]]`. Методы мы можем вызывать отдельно от класса
-(тут все как в es5, this не валиден. super-методы отработают как надо).
+`property [[HomeObject]]`.  
+Методы мы можем вызывать отдельно от класса
+(тут все как в es5, `this` не валиден. `super`-методы отработают как надо).
 Если мы вызовем метод класса как конструктор, то вывалится `TypeError`.
 
 ### Наследование от `Error`
@@ -800,6 +818,8 @@ let obj = {
     bar() { this.foo(); },
 }
 ```
+Обращаем внимание, что если у нас литерал, то после методов ставится запятая,
+а если класс - нет.
 
 
 
