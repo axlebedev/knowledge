@@ -1,5 +1,6 @@
 TODO: разобраться, как работают _code points_ и как различать от юникодов
 TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html
+TODO: хорошие советы по code style: 13.2 http://exploringjs.com/es6/ch_callables.html
 
 # let, const
 **Объявления `let` и `const` не возносятся наверх, как `var`.**  
@@ -121,6 +122,11 @@ let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
 
 // TypeError: Cannot spread non-iterable object.
 let arr3 = [...arrayLike];
+```
+Бонус: если вторым аргументом подать какую-нибудь функцию,
+то сделает **map**:
+```JavaScript
+let arr2 = Array.from(arrayLike, ch => ch.toUpperCase()); // ['A', 'B', 'C']
 ```
 
 
@@ -331,6 +337,24 @@ TODO: http://exploringjs.com/es6/ch_symbols.html
 
 
 
+# Генераторы
+```JavaScript
+// Generator function expression:
+const foo = function* (x) { ··· };
+// Function declaration:
+function* foo(x) { ··· }
+```
+
+## this в генераторах
+_Function/method calls:_ `this` is handled like it is with traditional 
+functions. The results of such calls are generator objects.
+_Constructor calls:_ Accessing `this` inside a generator function causes 
+a `ReferenceError`. The result of a constructor call is a generator object.
+
+
+
+
+
 # Оператор многоточия
 ## В массивах
 Разворачивает итерабельное что-нибудь в элементы массива
@@ -378,6 +402,12 @@ let arr = [...set]; // [11, -1, 6]
 
 
 # Функции
+## this в es5
+Rules for this:  
+ - _Function calls:_ `this` is undefined in strict mode and the global object in sloppy mode.
+ - _Method calls:_ `this` is the receiver of the method call (or the first argument of call/apply).
+ - _Constructor calls:_ `this` is the newly created instance.
+
 ## Параметры по умолчанию (как в плюсах)
 ```JavaScript
 function foo(x=0, y=0)
@@ -473,6 +503,12 @@ Math.max(-1, ...[-1, 5, 11], 3); // 11
 
 
 # Arrow functions
+Что берется из окружающего блока:
+ - `arguments`
+ - `super`
+ - `this`
+ - `new.target`
+
 ```JavaScript
 let arr = [1, 2, 3];
 // es5 style
@@ -483,7 +519,13 @@ arr.map(function(x) {
 // es6 style
 arr.map(x => x * x);
 ```
-А еще они не переделывают `this`: он остается каким был при вызове.  
+
+Правила для `this`:
+ - _Function calls:_ lexical `this` etc.
+ - _Method calls:_ You can use arrow functions as methods, but their `this` 
+   continues to be lexical and does not refer to the receiver of a method call.
+ - _Constructor calls:_ produce a `TypeError`.
+
 
 
 
@@ -697,7 +739,12 @@ let b;
 
 # Классы
 Классы **не hoisted**! Это связано с тем, что наследование определено как
-выражения.
+выражения.  
+Метод `constructor` - специальный, он становится равен самому классу:
+`Person.prototype.constructor === Person // true`  
+Класс не может быть вызван как метод или функция.  
+В конструкторах унаследованных классов перед любыми обращениями к `this`
+необходимо сначала вызвать `super`-конструктор.  
 
 ```JavaScript
 class Person {
@@ -712,16 +759,26 @@ class Person {
 
 ## Наследование
 ```JavaScript
+Super-method calls: super.method('abc')
+Super-constructor calls: super(8)
+
 class Employee extends Person {
     constructor(name, title) {
         super(name);
-        this.title = title;
+        // Only available inside the special method constructor() 
+        // inside a derived class definition.
     }
     someMethod() {
-        return super.describe() + ' (' + this.title + ')';
+        return super.method();
+        // 'super.method()' : only available within method definitions 
+        // inside either object literals or derived class definitions.
     }
 }
 ```
+Для того, чтобы `super` работал как надо, в объекте должно быть 
+`property [[HomeObject]]`. Методы мы можем вызывать отдельно от класса
+(тут все как в es5, this не валиден. super-методы отработают как надо).
+Если мы вызовем метод класса как конструктор, то вывалится `TypeError`.
 
 ### Наследование от `Error`
 ```JavaScript
