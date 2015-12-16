@@ -17,14 +17,14 @@ TODO: хорошие советы по code style: 13.2 http://exploringjs.com/e
 ссылки внутри него не константны.
 ```JavaScript
 const obj = {};
-obj.prop = 123; // сработало, в сам obj мы больше ничего не присвоим, а его свойствам можно
-console.log(obj.prop); // 123
+obj.prop = 123;
+console.log(obj.prop); // 123, сработало, в сам obj мы больше ничего не присвоим, а его свойствам можно
 
 obj = Object.freeze(obj); // теперь и внутри объекта нихренашеньки не поменять
 ```
 
 ## Поведение в циклах
-`let`: для функций внутри цикла это будет одна и та же переменная
+`var`: для функций внутри цикла это будет одна и та же переменная
 (вспоминаем задачу о shooter)
 ```JavaScript
 for (var i=0; i < 3; i++)
@@ -41,6 +41,7 @@ for (let i=0; i < 3; i++)
 ```JavaScript
 function func1(arg) {
     let arg; // static error: duplicate declaration of `arg`
+    // потому что arg в параметре компилируется в let arg в начале тела функции
 }
 
 function func2(arg) {
