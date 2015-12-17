@@ -139,6 +139,151 @@ let arr2 = Array.from(arrayLike, ch => ch.toUpperCase()); // ['A', 'B', 'C']
 
 
 
+# Объекты
+В литерале добавился способ объявления функций:
+```JavaScript
+//es5
+let obj1 = {
+    var myMethod = function(x, y) { ··· };
+};
+
+//es6
+let obj2 = {
+    myMethod(x, y) { ··· }
+};
+```
+
+Литерал можно объявлять сокращенно:
+```JavaScript
+let first = 'Jane';
+let last = 'Doe';
+
+let obj = { first, last }; // es6 syntax
+// Same as es5:
+let obj = { first: first, last: last };
+```
+
+Вычислять название ключа динамически, с помощью квадратных скобок.
+Основное применение - когда используем `Symbol`
+```JavaScript
+let propKey = 'foo';
+let obj = {
+    [propKey]: true,
+    ['b'+'ar']: 123,
+    ['h'+'ello']() {
+        return 'hi';
+    }
+};
+
+// пример с Symbol
+let obj = {
+    * [Symbol.iterator]() { // (A)
+        yield 'hello';
+        yield 'world';
+    }
+};
+for (let x of obj) {
+    console.log(x);
+}
+// Output:
+// hello
+// world
+```
+
+## Object.assign
+Раньше его называли `extend()`. Прикол в том, что к существующему объекту 
+добавляются свойства из другого объекта 
+(только own properties, на унаследованные похуй)
+```JavaScript
+let obj = { foo: 123 };
+Object.assign(obj, { bar: true });
+console.log(JSON.stringify(obj)); // {"foo":123,"bar":true}
+```
+Можно вызывать как `Object.assign(target, source1, source2 ...)`, тогда 
+обрабатываться они будут по очереди.
+
+`Object.assign` обрабатывает только те свойства, 
+которые _enumerable_ **и** _own_. Если какое-то свойство - сеттер, то он будет
+вызван с соотв. значением. Нельзя использовать метод, которые использует `super`
+
+Пример использования: дефолтные значения
+```JavaScript
+let DEFAULTS = { /*some object*/ };
+function processContent(options) {
+    options = Object.assign({}, DEFAULTS, options); // (A)
+}
+```
+Можно еще клонировать объект, но это грязный метод, лучше не увлекаться.
+
+## Геттеры-сеттеры
+```JavaScript
+let obj = {
+    get foo() {
+        console.log('GET foo');
+        return 123;
+    },
+    set bar(value) {
+        console.log('SET bar to '+value);
+        // return value is ignored
+    }
+};
+```
+Используется следующим образом:
+```JavaScript
+> obj.foo
+GET foo
+123
+> obj.bar = true
+SET bar to true
+true
+```
+
+## Получить свойства объекта
+ - `Object.keys(obj) : Array<string>`
+   all _string-valued_ keys of all _enumerable_ _own_ (non-inherited) properties.
+ - `Object.getOwnPropertyNames(obj) : Array<string>`
+   all _string-valued_ keys of all _own_ properties.
+ - `Object.getOwnPropertySymbols(obj) : Array<symbol>`
+   all _symbol-valued_ keys of all _own_ properties.
+ - `Reflect.ownKeys(obj) : Array<string|symbol>`
+   all keys of all _own_ properties.
+ - `Reflect.enumerate(obj) : Iterator`
+   all _string-valued_ keys of all _enumerable_ properties
+
+Порядок итерирования следующий:
+ 1. Индексы массива
+ 2. _String-valued_ keys
+ 3. _Symbol-valued_ keys
+Кроме `Map` и `Set`, там в порядке добавления.
+
+
+## Object.is
+Служит для сравнения двух объектов, причем:
+```JavaScript
+NaN === NaN;         // false
+Object.is(NaN, NaN); // true
+
++0 === -0;         // true
+Object.is(+0, -0); // false
+```
+Все остальные случаи работают как `===`.
+
+## Да, и такой метод появился. Если сравнивать с сразу правильным созданием 
+объекта, то работает медленно.
+
+## Работа с прототипом объекта
+```JavaScript
+var p = Object.getPrototypeOf(obj);
+var obj = Object.create(p);
+Object.setPrototypeOf(obj, proto)
+```
+
+
+
+
+
+
+
 # Number
 Теперь можно в различных нотациях:
 ```JavaScript
