@@ -521,11 +521,17 @@ Math.max(-1, ...[-1, 5, 11], 3); // 11
 ## Синтаксиc
 Входные параметры могут быть следующего вида:
  - `() => { ... }` - функция без параметров
- - `x => { ... }` или  `(x) => { ... }` - функция с одним параметром
+ - `x => { ... }` или  `(x) => { ... }` - функция с одним параметром-идентификатором
+ - `(x=0) => { ... }` - функция с одним параметром с дефолтным значением, скобки обязательны
+ - `([x, y]) => { ... }` - функция с одним деструктурированным параметром, скобки обязательны
  - `(x, y) => { ... }` - функция с несколькими параметрами
 Тело функции может выглядеть так:
- - `x => { x *= 2; return x * x}`
- - `x => { x *= 2; return x * x}`
+ - `x => { return x * x; }` или `x => x * x` - тело состоит из одного оператора
+ - `x => { throw x; }` - если тело состоит из даже одного _statement_, фиг.скобки нужны
+   _statement_ отличается от _expression_ тем, что не производит значения (это грубо говоря)
+ - `x => { x *= 2; return x * x}` - в теле больше одного оператора
+ - `x => ({ value: 2 })` - возвращает objrct-literal, скобки обязательны
+   (иначе `value` будет _label_ для `continue` и `break`, работает типа как _goto_)
 
 ```JavaScript
 let arr = [1, 2, 3];
@@ -538,17 +544,26 @@ arr.map(function(x) {
 arr.map(x => x * x);
 ```
 
-Что берется из окружающего блока:
+В составе выражений такие функции надо заворачивать в скобки:
+```JavaScript
+console.log(typeof () => {}); // SyntaxError
+console.log(typeof (() => {})); // OK
+```
+
+## Что берется из окружающего блока (lexical):
  - `arguments`
  - `super`
  - `this`
  - `new.target`
 
-Правила для `this`:
+## Правила для `this`:
  - _Function calls:_ lexical `this` etc.
  - _Method calls:_ You can use arrow functions as methods, but their `this` 
    continues to be lexical and does not refer to the receiver of a method call.
  - _Constructor calls:_ produce a `TypeError`.
+
+
+
 
 
 
