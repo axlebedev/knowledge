@@ -1,3 +1,5 @@
+Остановился: 16.3
+
 TODO: разобраться, как работают _code points_ и как различать от юникодов  
 TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html  
 TODO: хорошие советы по code style: 13.2 http://exploringjs.com/es6/ch_callables.html  
@@ -933,24 +935,54 @@ let b;
 
 
 # Классы
-Классы **не hoisted**! Это связано с тем, что наследование разворачивается
-в много строк кода.  
-Метод `constructor` - специальный, он становится равен самому классу:
-`Person.prototype.constructor === Person // true`  
-Класс не может быть вызван как метод или функция.  
-В конструкторах унаследованных классов перед любыми обращениями к `this`
-необходимо сначала вызвать `super`-конструктор.  
-
 ```JavaScript
-class Person {
-    constructor(name) {
+class Person { // (1) (2)
+    constructor(name) { // (3)
         this.name = name;
     }
+
     someMethod() {
         return 'Person called '+this.name;
     }
+
+    set anotherName(value) { (5)
+        this.name = name;
+    }
+
+    [name+'Method']() {
+        return 'computedMethod';
+    }
+
+    static anotherMethod() { // (6)
+        return 'another method called';
+    }
+
+    static get ZERO() { // (5) (6)
+        return 'ZERO';
+    }
 }
+
+let inst = new Person('ololo');
+inst.someMethod(); // 'Person called ololo' 
+inst.ololoMethod(); // 'computedMethod'
+inst.anotherName = 'cococo'; // (5)
+
+Person.anotherMethod(); // 'another method called' (6)
+Person.ZERO; // 'ZERO' (5) (6)
 ```
+ 1. На самом деле `typeof Person` будет `function`, но вызвать его как функцию мы
+    не сможем (_TypeError_), только через `new`.  
+ 2. Классы **не hoisted**! Это связано с тем, что наследование разворачивается
+    в много строк кода. Если попытаться обратиться к классу до его объявления - 
+    получим _ReferenceError_.  
+ 3. Метод `constructor` - специальный, он становится равен самому классу:
+    `Person.prototype.constructor === Person // true`  
+ 4. В конструкторах унаследованных классов перед любыми обращениями к `this`
+    необходимо сначала вызвать `super`-конструктор.  
+ 5. Геттеры-сеттеры, к ним обращаемся без скобок, как к свойствам
+ 6. Можно статические методы, статические свойства нельзя (обходится с помощью
+    статических гет-сет).
+
 
 ## Наследование
 Super-method calls: `super.method('abc')` в объявлении методов и конструктора.  
@@ -960,8 +992,7 @@ Super-constructor calls: `super(8)` в объявлении конструкто
 class Employee extends Person {
     constructor(name, title) {
         super(name);
-        // Only available inside the special method constructor() 
-        // inside a derived class definition.
+        // Only available inside the special method constructor() inside a derived class definition.
     }
     someMethod() {
         return super.method();
@@ -976,7 +1007,8 @@ class Employee extends Person {
 (тут все как в es5, `this` не валиден. `super`-методы отработают как надо).
 Если мы вызовем метод класса как конструктор, то вывалится `TypeError`.
 
-### Наследование от `Error`
+### Наследование от встроенных классов
+Можно.
 ```JavaScript
 class MyError extends Error {
 }
