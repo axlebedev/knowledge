@@ -1007,6 +1007,7 @@ Super-constructor calls: `super(8)` в объявлении конструкто
 ```JavaScript
 class Employee extends Person {
     constructor(name, title) {
+        this.someMethod(); // Error! (1)
         super(name);
         // Only available inside the special method constructor() inside a derived class definition.
     }
@@ -1017,8 +1018,17 @@ class Employee extends Person {
     }
 }
 ```
+ 1. Любое (прямое или косвенное) использование `this` в конструкторе должно
+    быть **после** `super()` (вызова конструктора родителя).
+ 2. Дважды использовать `super` вызовет _ReferenceError_. 
+ 3. Если мы не вызвали `super` или не инициализировали `this`, то _ReferenceError_.
+    (это если мы возвращаем неявно, `return` в коде нет).
+ 4. Если мы возвращаем не-объект, вернется `this`. Если он не проинициализирован,
+    будет _TypeError_.
+
 Для того, чтобы `super` работал как надо, в объекте должно быть 
-`property [[HomeObject]]`.  
+`property [[HomeObject]]`. Вообще использовать `super` можно везде, где есть 
+_prototype_, будь то объявление класса или литерал.
 Методы мы можем вызывать отдельно от класса
 (тут все как в es5, `this` не валиден. `super`-методы отработают как надо).
 Если мы вызовем метод класса как конструктор, то вывалится `TypeError`.
