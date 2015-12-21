@@ -1,4 +1,5 @@
-Остановился: 16.3
+http://exploringjs.com/es6
+Остановился: 16.4
 
 TODO: разобраться, как работают _code points_ и как различать от юникодов  
 TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html  
@@ -937,12 +938,16 @@ let b;
 # Классы
 ```JavaScript
 class Person { // (1) (2)
-    constructor(name) { // (3)
+    constructor(name) { // (3) (8)
         this.name = name;
     }
 
     someMethod() {
         return 'Person called '+this.name;
+    }
+
+    someMethod() { // уже был такой метод (7)
+        // Error!!!
     }
 
     set anotherName(value) { (5)
@@ -963,6 +968,8 @@ class Person { // (1) (2)
 }
 
 let inst = new Person('ololo');
+let err = Person('ololo'); // без new нельзя (9)
+let err = new Person.prototype.someMethod(); // метод как конструктор нельзя (9)
 inst.someMethod(); // 'Person called ololo' 
 inst.ololoMethod(); // 'computedMethod'
 inst.anotherName = 'cococo'; // (5)
@@ -982,6 +989,15 @@ Person.ZERO; // 'ZERO' (5) (6)
  5. Геттеры-сеттеры, к ним обращаемся без скобок, как к свойствам
  6. Можно статические методы, статические свойства нельзя (обходится с помощью
     статических гет-сет).
+ 7. Несколько раз объявить свойства класса с одним именем нельзя.
+ 8. Метод `constructor` не может быть генератором или гет-сеттером.
+ 9. Класс не может быть вызван как функция, а метод не может быть вызван как
+    конструктор.
+
+В отличие от литералов (у них функции enumerable-ные):
+Статические свойства, свойства прототипа: `writable` и `configurable`, но не `enumerable`.
+`constructor` и `prototype`: не `writable`, не `configurable`, не `enumerable`.
+
 
 
 ## Наследование
@@ -1009,6 +1025,7 @@ class Employee extends Person {
 
 ### Наследование от встроенных классов
 Можно.
+TODO: `new.target` 16.4.2
 ```JavaScript
 class MyError extends Error {
 }
