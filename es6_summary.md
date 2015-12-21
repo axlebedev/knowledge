@@ -1,5 +1,5 @@
 http://exploringjs.com/es6
-Остановился: 16.4
+Остановился: 18
 
 TODO: разобраться, как работают _code points_ и как различать от юникодов  
 TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html  
@@ -1076,27 +1076,70 @@ map.set(key, 1);
 
 
 # Модули
-## Вариант 1
+В верстке делается так:
+```HTML
+<script type="module">
+```
+
+## Вариант 1: именованные экспорты
 ```JavaScript
 //------ lib.js ------
 export const sqrt = Math.sqrt;
 export function square(x) { return x * x; }
-export function diag(x, y) { return sqrt(square(x) + square(y)); }
 
-//------ main1.js ------
+// а можно так
+const MY_CONST = 123;
+let add = (x, y) => x + y;
+export { MY_CONST, add };
+export { MY_CONST as CONST, add };
+
+//------ main.js ------
+import square from 'lib';
 import { square, diag } from 'lib';
-
-//------ main2.js ------
-import * as lib from 'lib'; // (A)
-console.log(lib.square(11)); // 121
+import { square as localSquare, diag } from 'lib';
+import * as lib from 'lib';
+import theDefault, { name1, name2 } from 'src/my_lib'; // вместо theDefault - любое удобное имя, 
+// подставится дефолтное значение. В таком списке должно быть первым!
+import { default as foo } // ага, default - это просто еще один идентификатор по большому счету
+import 'lib'; //ничего не заимпортит, тупо выполнит lib
 ```
 
-## Вариант 2
+## Вариант 2: дефолтный экспорт
+Функции/классы можно именовать, а можно и нет. Экспорт - единственное место,
+где жс допускает _анонимные_ function/class declaration.
 ```JavaScript
 //------ myFunc.js ------
 export default function () { ··· } // no semicolon!
+//или
+export default class { ··· } // no semicolon!
+//или
+let foo = 123;
+export { foo as default };
 
 //------ main1.js ------
 import myFunc from 'myFunc';
 myFunc();
 ```
+
+## Заметки про модули
+ 0. Надо быть аккуратнее с транспайлом модулей: какой-нибудь babel может облажаться.
+ 1. Top-level переменные в модуле не глобальны, а локальны для модуля.  
+ 2. Когда импортим - то расширение `.js` можно не писать.
+ 3. Все модули - синглтоны. Даже если мы вызвали модуль несколько раз из разных
+    мест, выполнится он всего один раз.  
+ 4. На один `export` должен быть только один declaration или expression:
+    вот так `export default const foo = 1, bar = 2, baz = 3;` нельзя!
+ 5. Imports are hoisted.
+ 6. Абсолютно всё (даже примитивы) в импортах передаются по ссылке. Но они read-only
+ 7. Циклические зависимости разрешены (_не рекомендовано_).
+ 8. Если мы делаем `export *`, то дефолтный экспорт игнорируется.
+ 9. Можно нагуглить лоадер модулей (чтобы например делать что-то на onload модуля),
+    но это пока не вошло в стандарт. 17.5.1
+
+## Чего нельзя
+Нижеперечисленное делается с помощью нестандартных module loader API.
+ 1. Динамически вычислимое имя модуля.
+ 2. Импорт или нет в зависимости от выполнения к-л условий: импорт должен
+    быть на top-level.
+ 3. Деструктуринг.
+
