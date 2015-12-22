@@ -1040,7 +1040,7 @@ for (let [index, elem] of arr.entries())
 ```
 
 ### Array.from
-Приводит _что-то_ к массиву. _Что-то_ не обязательно итерабельно, но оно должно
+Приводит _что-то_ к массиву. _Что-то_ либо итерабельно, либо оно должно
 иметь проиндексированные элементы и `length`.
 ```JavaScript
 let arrayLike = {
@@ -1059,11 +1059,83 @@ let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
 // TypeError: Cannot spread non-iterable object.
 let arr3 = [...arrayLike];
 ```
-Бонус: если вторым аргументом подать какую-нибудь функцию,
+**Бонус**: если вторым аргументом подать какую-нибудь функцию,
 то сделает **map**:
 ```JavaScript
 let arr2 = Array.from(arrayLike, ch => ch.toUpperCase()); // ['A', 'B', 'C']
 ```
+Еще пара бонусов:
+```JavaScript
+Array.from([0,,2]); // [ 0, undefined, 2 ]
+Array.from(new Array(5), () => 'a'); // [ 'a', 'a', 'a', 'a', 'a' ]
+Array.from(new Array(5), (x,i) => i); // [ 0, 1, 2, 3, 4 ]
+```
+
+### Array.of
+Создает новый массив:
+```JavaScript
+Array.of(item_0, item_1, ···)
+// или то же самое:
+new Array(item_0, item_1, ···)
+```
+Позволяет избежать ошибок, когда мы передаем всего один параметр в `new Array`.
+Также помогает, когда мы наследуем `Array` и передаем в конструктор какие-то
+нужные штуки.
+
+### Итерирование по массиву
+ - `keys()`
+ - `values()`
+ - `entries()`
+```JavaScript
+Array.from(['a', 'b'].keys()); // [ 0, 1 ]
+Array.from(['a', 'b'].values()); // [ 'a', 'b' ]
+Array.from(['a', 'b'].entries()); // [ [ 0, 'a' ], [ 1, 'b' ] ]
+
+for (let [index, elem] of ['a', 'b'].entries()) {···}
+```
+
+### Поиск в массиве
+`predicate = function(element, index, array)`  
+`find(predicate, thisArg?)` - возвращает первый элемент, для которого predicate
+вернул `true`.  
+`undefined` если не найдено.
+```JavaScript
+[6, -5, 8].find(x => x < 0); // -5
+[6, 5, 8].find(x => x < 0); // undefined
+```
+
+`Array.prototype.findIndex(predicate, thisArg?)` - возвращает индекс первого
+элемента с true предикатом.  
+`-1` если не найдено.  
+Пустые элементы воспринимает как `undefined`.
+```JavaScript
+[6, -5, 8].findIndex(x => x < 0); // 1
+[6, 5, 8].findIndex(x => x < 0); // -1
+```
+
+### Другие методы
+ - `Array.prototype.copyWithin(target : number, start : number, end = this.length) : This`
+Копирует элементы с индексами _[start,end)_ в индекс _target_.  
+Если два range перекрываются, то предпочтение отдается источнику.  
+Изменяет массив, на котором вызван.
+```JavaScript
+let arr = [0,1,2,3];
+arr.copyWithin(2, 0, 2); // [ 0, 1, 0, 1 ]
+arr; // [ 0, 1, 0, 1 ]
+```
+
+ - `Array.prototype.fill(value : any, start=0, end=this.length) : This`
+Заполняет массив значениями по индексам _[start,end)_.  
+Изменяет массив, на котором вызван.
+```JavaScript
+let arr = ['a', 'b', 'c'];
+arr.fill(7); // [ 7, 7, 7 ]
+arr; // [ 7, 7, 7 ]
+new Array(3).fill(7); // [ 7, 7, 7 ]
+['a', 'b', 'c'].fill(7, 1, 2); // [ 'a', 7, 'c' ]
+```
+
+
 
 ## Map
 Ключом может быть не обязательно строка, любое значение.
