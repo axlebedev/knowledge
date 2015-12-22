@@ -102,41 +102,6 @@ function bar(func = x => foo) {
 
 
 
-# Массивы
-## for..of
-```JavaScript
-var arr = ['a', 'b', 'c'];
-// можно получать элемент:
-for (let elem of arr)
-// а можно элемент с индексом:
-for (let [index, elem] of arr.entries())
-```
-
-## Array.from
-Приводит _что-то_ к массиву. _Что-то_ не обязательно итерабельно, но оно должно
-иметь проиндексированные элементы и `length`.
-```JavaScript
-let arrayLike = {
-    '0': 'a',
-    '1': 'b',
-    '2': 'c',
-    length: 3
-};
-
-// es5:
-var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
-
-// es6:
-let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
-
-// TypeError: Cannot spread non-iterable object.
-let arr3 = [...arrayLike];
-```
-Бонус: если вторым аргументом подать какую-нибудь функцию,
-то сделает **map**:
-```JavaScript
-let arr2 = Array.from(arrayLike, ch => ch.toUpperCase()); // ['A', 'B', 'C']
-```
 
 
 
@@ -1063,6 +1028,43 @@ let obj = {
 
 
 # Контейнеры
+
+## Массивы
+### for..of
+```JavaScript
+var arr = ['a', 'b', 'c'];
+// можно получать элемент:
+for (let elem of arr)
+// а можно элемент с индексом:
+for (let [index, elem] of arr.entries())
+```
+
+### Array.from
+Приводит _что-то_ к массиву. _Что-то_ не обязательно итерабельно, но оно должно
+иметь проиндексированные элементы и `length`.
+```JavaScript
+let arrayLike = {
+    '0': 'a',
+    '1': 'b',
+    '2': 'c',
+    length: 3
+};
+
+// es5:
+var arr1 = [].slice.call(arrayLike); // ['a', 'b', 'c']
+
+// es6:
+let arr2 = Array.from(arrayLike); // ['a', 'b', 'c']
+
+// TypeError: Cannot spread non-iterable object.
+let arr3 = [...arrayLike];
+```
+Бонус: если вторым аргументом подать какую-нибудь функцию,
+то сделает **map**:
+```JavaScript
+let arr2 = Array.from(arrayLike, ch => ch.toUpperCase()); // ['A', 'B', 'C']
+```
+
 ## Map
 Ключом может быть не обязательно строка, любое значение.
 ```JavaScript
