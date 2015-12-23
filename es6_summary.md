@@ -468,65 +468,6 @@ TODO: http://exploringjs.com/es6/ch_symbols.html
 
 
 
-# Генераторы
-Выглядят, как указатели на функцию:
-```JavaScript
-// Generator function expression:
-const foo = function* (x) { ··· };
-// Function declaration:
-function* foo(x) { ··· }
-```
-
-## this в генераторах
- - _Function/method calls:_ `this` is handled like it is with traditional 
-functions. The results of such calls are generator objects.  
- - _Constructor calls:_ Accessing `this` inside a generator function causes 
-a `ReferenceError`. The result of a constructor call is a generator object.
-
-
-
-
-
-# Оператор многоточия
-## В массивах
-Разворачивает итерабельное что-нибудь в элементы массива
-```JavaScript
-[1, ...[2,3], 4]; // [1, 2, 3, 4]
-```
-
-## Аргумент функции в объявлении
-Означает "все остальное, что попало в скобки при вызове".
-```JavaScript
-function logAllArguments(arg1, ...args) { /*some code*/ }
-logAllArguments(1, 2, 3, 4) // arg1 = 1, args = [2, 3, 4]
-```
-
-## Аргумент функции при вызове
-Разворачивает массив в аргументы через запятую.  
-Помогает избавиться от `apply`.
-```JavaScript
-function fn(arg1, arg2) {/*some code*/};
-let arr = [1, 2];
-fn(...arr); // тут мы как будто сделали fn(1, 2)
-```
-
-## Конкатенация массивов
-```JavaScript
-let arr1 = ['a', 'b'];
-let arr2 = ['c'];
-let arr3 = ['d', 'e'];
-
-console.log([...arr1, ...arr2, ...arr3]);
-    // [ 'a', 'b', 'c', 'd', 'e' ]
-```
-
-## Приведение итерабельного _чего-нибудь_ к массиву
-```JavaScript
-let set = new Set([11, -1, 6]);
-let arr = [...set]; // [11, -1, 6]
-```
-Вообще есть способ получше (_Array.from_), в главе про массивы
-
 
 
 
@@ -1027,6 +968,91 @@ let obj = {
 
 
 
+
+# Оператор многоточия
+## В массивах
+Разворачивает итерабельное что-нибудь в элементы массива
+```JavaScript
+[1, ...[2,3], 4]; // [1, 2, 3, 4]
+```
+
+## Аргумент функции в объявлении
+Означает "все остальное, что попало в скобки при вызове".
+```JavaScript
+function logAllArguments(arg1, ...args) { /*some code*/ }
+logAllArguments(1, 2, 3, 4) // arg1 = 1, args = [2, 3, 4]
+```
+
+## Аргумент функции при вызове
+Разворачивает массив в аргументы через запятую.  
+Помогает избавиться от `apply`.
+```JavaScript
+function fn(arg1, arg2) {/*some code*/};
+let arr = [1, 2];
+fn(...arr); // тут мы как будто сделали fn(1, 2)
+```
+
+## Конкатенация массивов
+```JavaScript
+let arr1 = ['a', 'b'];
+let arr2 = ['c'];
+let arr3 = ['d', 'e'];
+
+console.log([...arr1, ...arr2, ...arr3]);
+    // [ 'a', 'b', 'c', 'd', 'e' ]
+```
+
+## Приведение итерабельного _чего-нибудь_ к массиву
+```JavaScript
+let set = new Set([11, -1, 6]);
+let arr = [...set]; // [11, -1, 6]
+```
+Вообще есть способ получше (_Array.from_), в главе про массивы
+
+
+
+
+
+# Итерабельность и итераторы
+TODO
+**Iterable** - структура данных, в которой определен метод с ключом 
+`Symbol.iterator` для получения данных.
+**Iterator** - указатель для прохода по элементам. Возвращает объекты через
+метод `next()`.
+```JavaScript
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+iter.next(); // { value: 'a', done: false }
+iter.next(); // { value: 'b', done: false }
+iter.next(); // { value: 'c', done: false }
+iter.next(); // { value: undefined, done: true }
+```
+Объекты, которые созданы через литерал - не итерабельны.  
+
+
+
+
+
+# Генераторы
+Выглядят, как указатели на функцию:
+```JavaScript
+// Generator function expression:
+const foo = function* (x) { ··· };
+// Function declaration:
+function* foo(x) { ··· }
+```
+
+## this в генераторах
+ - _Function/method calls:_ `this` is handled like it is with traditional 
+functions. The results of such calls are generator objects.  
+ - _Constructor calls:_ Accessing `this` inside a generator function causes 
+a `ReferenceError`. The result of a constructor call is a generator object.
+
+
+
+
+
 # Контейнеры
 
 ## Массивы
@@ -1212,6 +1238,7 @@ for (let [key, value] of map.entries()) {···}
 Чтобы смержить два мапа, тоже приводим к массивам.  
 
 ### WeakMap
+Не итерабелен.  
 TODO
 `WeakMap` не защищает ключи от сборки мусора (т.е. мы можем не беспокоиться
 об утечках памяти).  
@@ -1250,7 +1277,23 @@ set.clear();
  - `keys()`
 
 ### WeakSet
+Не итерабелен.  
 Аналогично WeakMap.
+
+## Typed Array
+Нужны для оперирования бинарными данными.  
+Бывают следующие типмассивы:
+ - `Int8Array`
+ - `Uint8Array`
+ - `Uint8CArray` 
+ - `Int16Array`
+ - `Uint16Array` 
+ - `Int32Array`
+ - `Uint32Array` 
+ - `Float32Array`	
+ - `Float64Array`
+`ArrayBuffer` служит для хранения данных, для представления - TypedArrays и DataViews.  
+TODO.
 
 
 
