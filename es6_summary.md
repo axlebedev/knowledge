@@ -1,5 +1,5 @@
 http://exploringjs.com/es6
-Остановился: 18
+Остановился: 22.3.5.2
 
 TODO: разобраться, как работают _code points_ и как различать от юникодов  
 TODO: хорошие советы по code style: 12.7 http://exploringjs.com/es6/ch_parameter-handling.html  
@@ -1035,12 +1035,36 @@ iter.next(); // { value: undefined, done: true }
 
 
 # Генераторы
-Выглядят, как указатели на функцию:
+Можно быть определен как _function declaration_, _function expression_,
+_метод в литерале_, _метод в классе_.  
+`yield` будет работать только в функции генератора (если внутри нее еще функция
+в которой yield - то работать не будет).  
+Выглядят, как указатели на функцию (**звездочка**):
 ```JavaScript
-// Generator function expression:
-const foo = function* (x) { ··· };
-// Function declaration:
-function* foo(x) { ··· }
+function* genFunc() {
+    yield 'a';
+    yield 'b';
+}
+
+let genObj = genFunc();
+// Способ 1:
+genObj.next(); // { value: 'a', done: false }
+genObj.next(); // { value: 'b', done: false }
+genObj.next(); // { value: undefined, done: true } done: true => end of sequence
+// Если бы у genFunc был return, то вместо undefined в последнем случае было бы это значение
+// Но в обходах цикла return не участвует
+
+// Способ 2:
+for (let x of genFunc()) {
+    console.log(x);
+}
+// Output:
+// a
+// b
+
+// Способ 3:
+let arr = [...genFunc()]; // ['a', 'b']
+let [x, y] = genFunc();
 ```
 
 ## this в генераторах
@@ -1048,6 +1072,24 @@ function* foo(x) { ··· }
 functions. The results of such calls are generator objects.  
  - _Constructor calls:_ Accessing `this` inside a generator function causes 
 a `ReferenceError`. The result of a constructor call is a generator object.
+
+## Генератор внутри генератора
+В этом случае после `yield` ставим `*`:
+```JavaScript
+function* foo() {
+    yield 'a';
+    yield 'b';
+}
+
+function* bar() {
+    yield 'x';
+    yield* foo();
+    yield* ['m', 'n'];
+    yield 'y';
+}
+
+[...bar()]; // ['x', 'a', 'b', 'm', 'n', 'y']
+```
 
 
 
