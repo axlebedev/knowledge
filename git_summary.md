@@ -26,7 +26,7 @@ git-scm.com/book/en/v2
 `git help` - просмотр справки  
 `git init` - создать новый репозиторий  
 
-`git clone` - [клонирует](#что-делает-git-clone) репозиторий
+`git clone` - [клонирует](#git-clone) репозиторий
 
 
 
@@ -297,7 +297,7 @@ git checkout develop // перешли на develop
 git merge --no-ff feature/zoomRefactored // смержили develop с нашей веткой через no-ff
 ```
 
-## Что делает `git clone`
+## Что делает `git clone` <a name="git-clone"></a>
 ```
 mkdir <dirname>
 cd <dirname>
