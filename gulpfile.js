@@ -25,7 +25,6 @@ var cfg = {
 };
 
 cfg.src.dir = './';
-cfg.src.vim = './vim_summary.md';
 
 cfg.build.dir = './build/';
 
@@ -36,7 +35,8 @@ cfg.build.dir = './build/';
 gulp.task('connect', function () {
 	connect.server({
 		root: cfg.build.dir,
-		livereload: true
+    livereload: true,
+    port: 3000
 	});
 });
 
@@ -44,7 +44,7 @@ gulp.task('connect', function () {
 //vim_summary
 gulp.task('vim', function() {
 	console.log('gulp: vim');
-	gulp.src(cfg.src.vim)	
+	gulp.src('git_summary.md')	
 		.pipe(plumber())
 		.pipe(rename('./index.md'))
 		.pipe(marked())
@@ -55,7 +55,7 @@ gulp.task('vim', function() {
 
 // watch
 gulp.task('watch', function () {
-    gulp.watch(cfg.src.vim, ['vim']);
+  gulp.watch('git_summary.md', ['vim']);
 });
 
 
