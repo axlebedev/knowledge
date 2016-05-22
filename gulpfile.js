@@ -42,9 +42,9 @@ gulp.task('connect', function () {
 
 
 //vim_summary
-gulp.task('vim', function() {
+gulp.task('markdown', function() {
 	console.log('gulp: vim');
-	gulp.src('git_summary.md')	
+	gulp.src('func_prog.md')	
 		.pipe(plumber())
 		.pipe(rename('./index.md'))
 		.pipe(marked())
@@ -55,9 +55,9 @@ gulp.task('vim', function() {
 
 // watch
 gulp.task('watch', function () {
-  gulp.watch('git_summary.md', ['vim']);
+  gulp.watch('func_prog.md', ['markdown']);
 });
 
 
 // default
-gulp.task('default', ['connect', 'vim', 'watch']);
+gulp.task('default', ['connect', 'markdown', 'watch']);
