@@ -43,7 +43,6 @@ gulp.task('connect', function () {
 
 //vim_summary
 gulp.task('markdown', function() {
-	console.log('gulp: vim');
 	gulp.src('func_prog.md')	
 		.pipe(plumber())
 		.pipe(rename('./index.md'))

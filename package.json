@@ -24,7 +24,7 @@
     "marked": "^0.3.5"
   },
   "dependencies": {
-    "gulp-markdown": "^1.1.0",
+    "gulp-markdown": "^1.2.0",
     "gulp-markdown-livereload": "^1.0.0"
   }
 }
