@@ -387,3 +387,17 @@ http://vimcasts.org/episodes/tabs-and-spaces/
 `set path=.,**,/usr/bin` - работает для открытия файлов. Папки, в которых ищет.  
 `set exrc` - говорит виму читать еще файл с настройками в открываемой папки.  
 `wrapscan` - начинать ли поиск с начала при достижении конца  
+
+# Фолдинг
+| Команда | Что делает |
+|:-------:|:-----------|
+| `zc` | close current fold |
+| `zo` | open current fold |
+| `za` | toggle current fold |
+| `zC` | close current folds on all levels |
+| `zO` | open current folds on all levels |
+| `zA` | toggle current folds on all levels |
+| `zr` | reduces folding by opening one more level of folds throughout the whole buffer |
+| `zR` | open all folds |
+| `zm` | close one more level of folds throughout the whole buffer |
+| `zM` | close all folds |

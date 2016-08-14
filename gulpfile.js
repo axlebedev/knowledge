@@ -1,22 +1,12 @@
 "use strict";
 
-var gulp            = require('gulp');
-var connect         = require('gulp-connect');
-var plumber         = require('gulp-plumber');
-var marked 			= require('gulp-markdown-livereload');
-var rename 			= require('gulp-rename');
-//marked.setOptions({
-  //renderer: new marked.Renderer(),
-  //gfm: true,
-  //tables: true,
-  //breaks: false,
-  //pedantic: false,
-  //sanitize: true,
-  //smartLists: true,
-  //smartypants: false
-//});
+var gulp    = require('gulp');
+var connect = require('gulp-connect');
+var plumber = require('gulp-plumber');
+var marked  = require('gulp-markdown-livereload');
+var rename  = require('gulp-rename');
 
-
+var current_file = 'vimscript_summary.md';
 
 // ============== CONFIG ==============
 var cfg = {
@@ -43,7 +33,7 @@ gulp.task('connect', function () {
 
 //vim_summary
 gulp.task('markdown', function() {
-	gulp.src('func_prog.md')	
+	gulp.src(current_file)
 		.pipe(plumber())
 		.pipe(rename('./index.md'))
 		.pipe(marked())
@@ -54,7 +44,7 @@ gulp.task('markdown', function() {
 
 // watch
 gulp.task('watch', function () {
-  gulp.watch('func_prog.md', ['markdown']);
+  gulp.watch(current_file, ['markdown']);
 });
 
 
