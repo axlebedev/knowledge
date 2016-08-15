@@ -510,4 +510,65 @@ items({'a': 100, 5: 'five'}) " [['a', 100], [5, 'five']]
 ```
 
 # Toggling
-http://learnvimscriptthehardway.stevelosh.com/chapters/38.html
+`:help foldcolumn`  
+`:help winnr()`  
+`:help ctrl-w_w`  
+`:help wincmd`  
+
+Для булевых все просто:
+```
+:set number!
+```
+
+Для числовых немного сложнее:
+```
+function! FoldColumnToggle()
+    if &foldcolumn
+        setlocal foldcolumn=0
+    else
+        setlocal foldcolumn=4
+    endif
+endfunction
+```
+
+Для нечисловых используем флаг (в данном примере мы тогглим quickfix окно, сохраняя предыдущее активное):
+```
+let g:quickfix_is_open = 0
+
+function! QuickfixToggle()
+    if g:quickfix_is_open
+        cclose
+        let g:quickfix_is_open = 0
+        execute g:quickfix_return_to_window . "wincmd w"
+    else
+        let g:quickfix_return_to_window = winnr()
+        copen
+        let g:quickfix_is_open = 1
+    endif
+endfunction
+```
+
+# Функциональщина в vimscript
+* Vimscript позволяет хранить функции в переменных.  
+* Для работы со списками лучше написать функции, которые не изменяют старый список (см. deepcopy)
+  http://learnvimscriptthehardway.stevelosh.com/chapters/39.html - тут много примеров
+
+# Пути (в файловой системе)
+`:help expand()`  
+`:help fnamemodify()`  
+`:help filename-modifiers`  
+`:help simplify()`  
+`:help resolve()`  
+`:help globpath()`  
+`:help wildcards`  
+
+```
+:echom expand('%')                     " относительный путь до текущего файла
+:echom expand('%:p')                   " абсолютный путь до текущего файла
+:echom fnamemodify('foo.txt', ':p')    " абсолютный путь до файла foo.txt в текущей папке
+
+:echo globpath('.', '*')               " получить список файлов в текущей директории
+:echo split(globpath('.', '*'), '\n')  " как прошлая, только лучше
+```
+
+# Делаем плагин
