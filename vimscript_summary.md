@@ -572,3 +572,51 @@ endfunction
 ```
 
 # Делаем плагин
+В папке `~/.vim` лежат следующие папки:
+* `.vim/colors` - цветовые темы  
+  Например, имеем файл `./vim/color/mytheme.vim`, выполняем команду `:color mycolor` - и она применяется
+* `.vim/plugin` - файлы в этой папке выполняется один раз _при старте_ вима.
+* `.vim/ftdetect` - тоже выполняется при старте вима. 
+  The files in this directory should set up autocommands that detect and set the filetype of files, and nothing else. This means they should never be more than one or two lines long
+  Все содержимое каждого отдельного файла автоматически заворачивается в `augroup`.  
+* `.vim/ftplugin` - файлы в этой папке содержат код для нужных filetype.
+  Внимание! Файлы должны называться так же, как и filetype (например, для ft=derp файл должен называться `derp.vim`, или папка `derp/`)
+  Файлы исполняются тогда, когда вим устанавливает filetype для буфера.
+* `.vim/indent` - как и `ftplugin`, загружаются _в зависимости от имени_ файла/папки.
+  indent files should set options related to indentation for their filetypes.
+  Как бы можно все то же самое описать в `ftplugin`, но есть соглашение, что такие опции пишем тут.
+* `.vim/compiler` - compiler-related options in current buffer based on filename.
+* `.vim/after` - загружаются как `plugin`, но _после_ них. A bit of hack.
+* `.vim/autoload` - код отсюда загружается _лениво_.
+* `.vim/doc` - документация к плагину лежит тут, ее парсит `:help`.
+* `.vim/syntax` - синтаксис
+
+## `ftdetect`
+`:help ft`  
+`:help setfiletype`  
+
+В `ftdetect` лучше использовать `:setfiletype type` вместо `set filetype=type`  
+
+## `syntax`
+`:help syntax`
+`:help syn-keyword`
+`:help iskeyword`
+`:help group-name`
+`:help syn-match`
+`:help syn-priority`
+`:help syn-region`
+
+В `syntax` начинаем и заканчиваем так (это общепринято, просто превентим исполнение кода более одного раза):
+```
+if exists("b:current_syntax")
+    finish
+endif
+
+...code...
+
+let b:current_syntax = "potion"
+```
+
+### Фолдинг
+`:help usr_28`
+http://learnvimscriptthehardway.stevelosh.com/chapters/48.html

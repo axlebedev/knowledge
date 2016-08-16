@@ -1,0 +1,19 @@
+factorial = (n):
+    total = 1
+    n to 1 (i):
+        total *= i.
+    total.
+
+0x13241
+0xafd1a1
+123.432e-1
+
+"lalala"
+"foo\\"bar"
+# lal
+
+10 times (i):
+    i string print
+    '! is: ' print
+    factorial (i) string print
+    "\n" print.
