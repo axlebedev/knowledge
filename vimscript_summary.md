@@ -618,5 +618,32 @@ let b:current_syntax = "potion"
 ```
 
 ### Фолдинг
-`:help usr_28`
-http://learnvimscriptthehardway.stevelosh.com/chapters/48.html
+`:help usr_28`  
+`:help foldmethod`  
+`:help fold-manual`  
+`:help fold-marker and :help foldmarker`  
+`:help fold-indent`  
+`:help fdl`  
+`:help foldlevelstart`  
+`:help foldminlines`  
+`:help foldignor`  
+
+1. Каждая строка имеет свой _foldlevel_. Целый неотрицательный.
+2. Строки с _foldlevel_=0 никогда не фолдятся.
+3. Соседние строки с одинаковым _foldlevel_ фолдятся вместе.
+4. Если закрыт фолд левела Х, то закроются все строки с _foldlevel_ >= X.
+
+Если мы ставим строке _foldlevel_=-1, то он будет вычислен как наименьший из двух соседних.  
+Рядом могут стоять несколько строк с _foldlevel_=-1, тогда вызываться будет по цепочке.  
+Если один из фолдлевелов по соседству - открывающий, например `>2` то он будет засчитан правильно.  
+
+`:help foldexpr`  
+`:help fold-expr` Pay particular attention to all the "special" strings your expression can return.  
+`:help getline`  
+`:help indent()`  
+`:help line()`  
+
+### Секции
+`:help section`  
+`:help sections`  
+http://learnvimscriptthehardway.stevelosh.com/chapters/51.html
