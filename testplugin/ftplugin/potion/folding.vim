@@ -30,7 +30,7 @@ function! s:NextNonBlankLine(lnum)
 endfunction
 
 " эта функция возвращает foldlevel данной строки
-function! s:GetPotionFold(lnum)
+function! GetPotionFold(lnum)
     if getline(a:lnum) =~? '\v^\s*$'
         " -1 - наименьший из соседних фолдов
         " (если по соседству начинается фолд, то это засчитывается как level - 1

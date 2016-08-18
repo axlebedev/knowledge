@@ -646,4 +646,23 @@ let b:current_syntax = "potion"
 ### Секции
 `:help section`  
 `:help sections`  
-http://learnvimscriptthehardway.stevelosh.com/chapters/51.html
+`:help line-continuation`  
+
+`%^` - специальная комбинация в вим-регексе, означающая 'начало файла'.  
+
+### Вызов внешних команд
+`:!ls` например так.  
+`:silent !ls` не будет показывать output.  
+`:echom system("ls")` - покажет output команды, которая отправится в систему  
+
+`:help bufname`  
+`:help buftype`  
+`:help append()`  
+`:help split()`  
+`:help :!`  
+`:help :read`  
+`:help :read!`  
+`:help system()`  
+`:help design-not`  
+`:help bufwinnr()` - for checking if needed buffer is already opened  
+
