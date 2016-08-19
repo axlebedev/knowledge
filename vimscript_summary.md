@@ -666,3 +666,99 @@ let b:current_syntax = "potion"
 `:help design-not`  
 `:help bufwinnr()` - for checking if needed buffer is already opened  
 
+### Autoloading
+`:help autoload`  
+`:help silent!`  
+`:call somefile#Hello()` - таким образом ленивизируем загрузку функции.
+Если функция еще не загружена, то вим отыщет файл `autoload/somefile.vim` и загрузит ее.  
+
+Внутри файла функция должна быть определа вот так:
+```
+function somefile#Hello()
+    " ...
+endfunction
+```
+
+Можно использовать несколько `#`: `somedir#somefile#Hello()`.
+Тогда определение функции будет выглядеть так:
+```
+function somedir#somefile#Hello()
+    " ...
+endfunction
+```
+
+Когда вим находит файл для загрузки, он загружает его целиком (а не только нужную функцию).
+Но если мы попытаемся вызвать другую функцию, которую он не загрузил - то он загрузит снова.  
+Пример:
+```
+" autoload/example.vim
+
+echom "Loading..."
+
+function! example#Hello()
+    echom "Hello, world!"
+endfunction
+
+function! example#HelloAgain()
+    echom "Hello, AGAIN world!"
+endfunction
+
+echom "Done loading."
+```
+
+Откроем вим, выполним следующие команды:
+```
+:call example#Hello()
+ Loading...
+ Done loading.
+ Hello, world!
+
+:call example#HelloAgain()
+ Hello, AGAIN world!
+
+:call example#BadHello()
+ Loading...
+ Done loading.
+ UNKNOWN FUNCTION
+```
+
+### Документация
+`:help help-writing` for help about writing help.
+`:help :left`, `:help :right`, `:help :center` to learn about three useful commands for getting your ASCII art perfect.
+
+Хранится в папке `doc`  
+`:Helptags` обновит теги.  
+The first line of the file should contain the filename of the help file,
+followed by a one-line description of what the plugin does:  
+`*potion.txt* functionality for the potion programming language`
+
+#### Скелет доки
+* Introduction
+* Usage
+* Mappings
+* Configuration
+* License
+* Bugs
+* Contributing
+* Changelog
+* Credits
+
+#### Синтаксис
+Если окружить слово звездочками, то получится "тег" (`*somefunc*` => `:help somefunc`).  
+Линия из символов `=` или `-` будет подсвечена.  
+`|word|` - линк на тег, можно перейти по `<C-]>` или `:help word`  
+
+# Что почитать
+`:help various-motions`  
+`:help sign-support`  
+`:help virtualedit`  
+`:help map-alt-keys`  
+`:help error-messages`  
+`:help development`  
+`:help tips`  
+`:help 24.8`  
+`:help 24.9`  
+`:help usr_12.txt`  
+`:help usr_26.txt`  
+`:help usr_32.txt`  
+`:help usr_42.txt`  
