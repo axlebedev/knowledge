@@ -1,5 +1,8 @@
 http://package.elm-lang.org/packages/elm-lang/core/5.1.1
 
+Синтаксис:  
+http://elm-lang.org/docs/syntax
+
 ## Типы
 ```elm
 "hello" : String
@@ -41,6 +44,20 @@ False
 ```
 
 Применение записывается как `funcName arg1 arg2 ...`
+
+Тело функции можно записать так:
+```elm
+getRandomGif : String -> Cmd Msg
+getRandomGif topic =
+  let
+    url =
+      "https://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=" ++ topic
+
+    request =
+      Http.get url decodeGifUrl
+  in
+    Http.send NewGif request
+```
 
 ## If-then-else
 Это, по сути, просто тернарник
