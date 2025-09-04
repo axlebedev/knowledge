@@ -1,4 +1,5 @@
 # Go
+togyexample.com
 
 ## Hello world
 ```go
@@ -1946,3 +1947,184 @@ func main() {
     print(string(content2))
 }
 ```
+
+## Testing and benchmarking
+TODO: разобрать https://gobyexample.com/testing-and-benchmarking
+
+## Command line
+First build with `go build main.go`
+
+#### Command line arguments
+```go
+argsWithProg := os.Args // ./main arg1 arg2
+argsWithoutProg := os.Args[1:] // arg1 arg2
+```
+
+#### Command line flags
+По дефолту можно делать именованные аргументы типов int, string, bool ("true"/"false")  
+Автоматически сгенерится `--help` и текст ошибки   
+Именованные параметры _должны быть_ **до** остальных
+```go
+// args: param name, default value, description
+wordPtr := flag.String("word", "foo", "a string") // вернётся указатель!
+numbPtr := flag.Int("numb", 42, "an int") // вернётся указатель!
+forkPtr := flag.Bool("fork", false, "a bool") // вернётся указатель!
+// Ниже - то как мы пишем аргумент в заранеее выделенную переменную
+var svar string
+flag.StringVar(&svar, "svar", "bar", "a string var")
+
+// Выше - мы только объявили флаги. Ниже - парсим то что дал пользователь
+flag.Parse()
+
+// Пример запуска: `./main -fork=true -numb=23`
+```
+
+#### Command line subcommands
+Многие консольные утилиты предполагают подкоманды со своими параметрами (`git commit/checkout/fetch ...`, `go run/build ...`)  
+Для каждой подкоманды можно сделать свой набор флагов  
+(Можно сделать чтобы несколько подкоманд использовали какой-то один набор, т.е. FlagSet не привязан к подкоманде а его первый параметр - всего лишь рандомное имя)
+```go
+fooCmd := flag.NewFlagSet("foo", flag.ExitOnError)
+fooEnable := fooCmd.Bool("enable", false, "enable")
+fooName := fooCmd.String("name", "", "name")
+
+barCmd := flag.NewFlagSet("bar", flag.ExitOnError)
+barLevel := barCmd.Int("level", 0, "level")
+```
+
+#### Environment variables
+```go
+    var err error = os.Setenv("FOO", "1")
+	var foo string = os.Getenv("FOO")
+    var allVars []string = os.Environ() // ["KEY=value", ...]
+```
+
+#### Log
+`import "log"`
+
+##### Простой пример
+```go
+log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+// Вывод: 2023/10/05 14:30:25 main.go:10: Сообщение
+log.Print("Простое сообщение")
+log.Printf("Форматированное: %s", value)
+log.Println("Сообщение с новой строкой")
+```
+
+##### Лог в файл
+```go
+file, _ := os.OpenFile("app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+log.SetOutput(file)
+```
+
+##### Разные логи (разные уровни логгирования)
+```go
+var (
+    Info  = log.New(os.Stdout, "INFO: ", log.LstdFlags)
+    Error = log.New(os.Stderr, "ERROR: ", log.LstdFlags)
+)
+```
+
+## HTTP
+В Go можно сделать http server и client.
+
+#### HTTP client
+Пример, как обратиться по урлу, получить статус и прочитать ответ
+```go
+    resp, err := http.Get("https://gobyexample.com")
+    if err != nil {
+        panic(err)
+    }
+    defer resp.Body.Close()
+
+    fmt.Println("Response status:", resp.Status)
+
+    scanner := bufio.NewScanner(resp.Body)
+    for i := 0; scanner.Scan() && i < 5; i++ {
+        fmt.Println(scanner.Text())
+    }
+
+    if err := scanner.Err(); err != nil {
+        panic(err)
+    }
+```
+
+#### HTTP server
+A fundamental concept in net/http servers is _handlers_  
+Вот простой сервер, который отвечает на ручки "/hello" и "headers"  
+```go
+http.HandleFunc(
+	"/hello",
+	func(w http.ResponseWriter, req *http.Request) {fmt.Fprintf(w, "hello\n")},
+)
+
+http.HandleFunc(
+	"/headers", 
+	func(w http.ResponseWriter, req *http.Request) {
+		for name, headers := range req.Header {
+			for _, h := range headers {
+				fmt.Fprintf(w, "%v: %v\n", name, h)
+			}
+		}
+	},
+)
+
+http.ListenAndServe(":8090", nil)
+```
+
+#### Context
+Context (контекст) — это специальный объект в Go для передачи:
+- Данных между функциями
+- Сигналов отмены операций
+- Таймаутов выполнения
+
+> A `context.Context` is created for each request by the net/http machinery, and is available with the `Context()` method.
+TODO: более детальный пример https://gobyexample.com/context
+
+## Processes
+#### Spawning Processes
+Простой пример
+```go
+dateCmd := exec.Command("date")
+dateOut, err := dateCmd.Output()
+// err == *exec.Error // если команда вообще не смогла запуститься
+// err == *exec.ExitError ... err.exitCode() // если команда смогла запуститься но вернула ошибку
+```
+
+Вот так работаем с потоками ввода/вывода
+```go
+grepIn, _ := grepCmd.StdinPipe()
+grepOut, _ := grepCmd.StdoutPipe()
+grepCmd.Start()
+grepIn.Write([]byte("hello grep\ngoodbye grep"))
+grepIn.Close()
+grepBytes, _ := io.ReadAll(grepOut)
+grepCmd.Wait()
+```
+
+#### Exec'ing
+Если нам не нужно запускать новый процесс, можно выполнить так:
+```
+    binary, lookErr := exec.LookPath("ls") // binary (string) = /usr/bin/share
+    if lookErr != nil {
+        panic(lookErr)
+    }
+
+    args := []string{"ls", "-a", "-l", "-h"}
+    env := os.Environ()
+    execErr := syscall.Exec(binary, args, env)
+    if execErr != nil {
+        panic(execErr)
+    }
+```
+
+#### Signals
+Handling Unix signals
+```go
+sigs := make(chan os.Signal, 1)
+signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM) // Подписались только на SIGINT и SIGTERM
+```
+
+#### Exit
+Use `os.Exit` to immediately exit with a given status.  
+`defer` will not start.
